@@ -10,33 +10,53 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as GalleriaRouteImport } from './routes/galleria'
+import { Route as NewsRouteImport } from './routes/news'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GalleriaRoute = GalleriaRouteImport.update({
+  id: '/galleria',
+  path: '/galleria',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsRoute = NewsRouteImport.update({
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/galleria': typeof GalleriaRoute
+  '/news': typeof NewsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/galleria': typeof GalleriaRoute
+  '/news': typeof NewsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/galleria': typeof GalleriaRoute
+  '/news': typeof NewsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/galleria' | '/news'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/galleria' | '/news'
+  id: '__root__' | '/' | '/galleria' | '/news'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  GalleriaRoute: typeof GalleriaRoute
+  NewsRoute: typeof NewsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +68,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/galleria': {
+      id: '/galleria'
+      path: '/galleria'
+      fullPath: '/galleria'
+      preLoaderRoute: typeof GalleriaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/news': {
+      id: '/news'
+      path: '/news'
+      fullPath: '/news'
+      preLoaderRoute: typeof NewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  GalleriaRoute: GalleriaRoute,
+  NewsRoute: NewsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
