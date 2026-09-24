@@ -128,27 +128,29 @@ function Index() {
         </div>
       </section>
 
-      <section id="galleria" className="relative z-10 min-h-screen bg-paper px-5 py-14 text-ink md:px-12 md:py-16 lg:px-20">
+      <section id="galleria" className="relative z-10 min-h-screen bg-paper px-5 py-12 text-ink md:px-12 md:py-14 lg:px-20">
         <p className="font-display text-sm uppercase text-hot">04 / Galleria</p>
         <h2 className="mt-3 break-words font-display text-5xl font-bold uppercase xl:text-7xl">Fotogrammi.</h2>
         {/* Il pulsante "Vedi tutte le foto" prima stava qui accanto al titolo, in alto a destra — proprio dove
             finisce la bobina fissa, che lo copriva. Ora sta sotto la griglia, fuori da quella zona. */}
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
-          {/* Altezza FISSA (non aspect-video libero): cresce per breakpoint ma resta sempre entro il
-              budget verticale della sezione (che deve stare nel 100% di schermo, non oltre). object-contain
-              (non -cover): il video .mp4 (1920×1080, H.264/AAC) resta SEMPRE intero e proporzionato — mai
-              tagliato né deformato — eventuali bande nere ai lati sono normali se il box è più largo del 16:9. */}
-          <div className="relative flex h-56 items-center justify-center overflow-hidden border border-ink/20 bg-ink sm:h-64 md:col-span-2 md:h-72 lg:h-80">
-            <video controls preload="metadata" className="h-full w-full object-contain">
+        <div className="mt-6 grid gap-4 md:grid-cols-3">
+          {/* aspect-video = ESATTAMENTE il rapporto del sorgente (1920×1080 = 16:9, identico): il box ha
+              quindi sempre la stessa identica proporzione del video, mai più largo né più stretto — con
+              object-cover il video riempie tutto il box, zero bande nere, zero taglio (perché non c'è
+              nessuna differenza di proporzioni da compensare). L'altezza segue automaticamente la
+              larghezza disponibile ad ogni breakpoint, restando sempre nel budget verticale della sezione.
+              La colonna foto a destra (nessuna altezza propria) si allunga per combaciare in automatico. */}
+          <div className="relative aspect-video w-full overflow-hidden border border-ink/20 bg-ink md:col-span-2">
+            <video controls preload="metadata" className="h-full w-full object-cover">
               <source src="/media/reel-lorenzo.mp4" type="video/mp4" />
             </video>
           </div>
-          <div className="grid h-56 grid-rows-2 gap-4 sm:h-64 md:h-72 lg:h-80">
+          <div className="grid grid-rows-2 gap-4">
             <PhotoFrame label="Teatro" src="/media/teatro-dialogo-proiezione-04.jpg" fill />
             <PhotoFrame label="Editoriale" src="/media/editoriale-altalena-laterale-05.jpg" fill />
           </div>
         </div>
-        <Link to="/galleria" className="mt-6 inline-flex items-center justify-center gap-2 rounded-none bg-ink px-6 py-3 font-display uppercase text-paper transition-colors hover:bg-hot">Vedi tutte le foto <ArrowUpRight /></Link>
+        <Link to="/galleria" className="mt-4 inline-flex items-center justify-center gap-2 rounded-none bg-ink px-6 py-3 font-display uppercase text-paper transition-colors hover:bg-hot">Vedi tutte le foto <ArrowUpRight /></Link>
       </section>
 
       <section id="press" className="relative z-10 min-h-screen bg-signal px-5 py-14 text-paper md:px-12 md:py-16 lg:px-20"><FloatingMasks className="slow-drift pointer-events-none absolute right-16 top-20 hidden h-16 w-24 text-paper/15 lg:block" /><p className="font-display text-sm uppercase">05 / Parlano di me</p><h2 className="mt-3 max-w-4xl font-display text-5xl font-bold uppercase leading-none xl:text-8xl">Rassegna<br/>stampa.</h2><div className="mt-8 grid gap-px bg-paper/30 md:grid-cols-3">{["Una presenza scenica magnetica","Nuove voci della scena italiana","Il segno incontra la parola"].map((t,i)=><article key={t} className="min-h-56 bg-signal p-7"><span className="text-xs uppercase">Articolo 0{i+1} / Placeholder</span><h3 className="mt-10 font-display text-3xl leading-tight">{t}</h3><p className="mt-4 text-paper/75">Testata, data e breve estratto saranno inseriti qui.</p></article>)}</div><Link to="/news" className="mt-6 inline-flex items-center gap-2 rounded-none bg-paper px-6 py-3 font-display uppercase text-ink transition-colors hover:bg-ink hover:text-paper">Vedi di più news <ArrowUpRight/></Link></section>
