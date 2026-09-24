@@ -66,13 +66,14 @@ export function ReelNav({ active }: { active: number }) {
     return () => controls.stop();
   }, [active, wheelAngle]);
 
-  return <nav aria-label="Navigazione principale" className="fixed -right-16 -top-16 z-150 h-[32rem] w-[32rem] origin-top-right rounded-bl-[80%] scale-[0.38] sm:-right-21 sm:-top-21 sm:scale-[0.5] md:-right-42 md:-top-42 md:scale-[0.65] xl:scale-100">
+  return <nav aria-label="Navigazione principale" className="fixed -right-25 -top-25 z-150 h-[32rem] w-[32rem] origin-top-right rounded-bl-[80%] scale-[0.6] sm:-right-27 sm:-top-27 sm:scale-[0.65] md:-right-31 md:-top-31 md:scale-[0.75] xl:-right-42 xl:-top-42 xl:scale-100">
     {/* La STESSA identica bobina ad ogni larghezza di schermo (nessuna barra/stile diverso su mobile): cambia
         solo la scala, sempre "incastonata" nell'angolo in alto a destra — sbordando leggermente fuori dal
         bordo dello schermo esattamente come su desktop (non un cerchio pieno e fluttuante su telefono).
         L'offset negativo (-right/-top) è proporzionale alla scala di ogni breakpoint, così la percentuale di
         disco tagliata dal bordo resta la stessa a ogni larghezza. Cellulare piccolo → tablet → desktop:
-        0.38 → 0.5 (da 640px) → 0.65 (da 768px) → 1 (piena, da 1280px). */}
+        0.6 → 0.65 (da 640px) → 0.75 (da 768px) → 1 (piena, da 1280px). Scala mobile alzata da 0.38 a
+        0.6: sotto quella soglia le scritte (font fisso, scalato col resto) diventavano illeggibili. */}
     {/* Contenitore generale (l'angolo a quarto di cerchio in alto a destra): h-/w- = dimensione totale, rounded-bl-[%] = quanto è arrotondato l'angolo */}
 
     <FilmStrip />
