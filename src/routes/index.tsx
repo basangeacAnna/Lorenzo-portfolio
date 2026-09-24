@@ -27,8 +27,10 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-function PhotoFrame({ label, src, tall = false, compact = false }: { label: string; src?: string; tall?: boolean; compact?: boolean }) {
-  return <div className={`group relative overflow-hidden border border-paper/35 bg-muted ${tall ? "min-h-[28rem]" : compact ? "min-h-40" : "min-h-72"}`}>
+function PhotoFrame({ label, src, tall = false, compact = false, fill = false }: { label: string; src?: string; tall?: boolean; compact?: boolean; fill?: boolean }) {
+  // fill: riempie esattamente l'altezza del genitore (nessun min-height proprio) — per quando il box
+  // deve combaciare con un'altezza decisa da fuori (es. accanto al video nella Galleria).
+  return <div className={`group relative overflow-hidden border border-paper/35 bg-muted ${fill ? "h-full" : tall ? "min-h-[28rem]" : compact ? "min-h-40" : "min-h-72"}`}>
     {src ? <img src={src} alt={label} className="absolute inset-0 h-full w-full object-cover" /> : <div className="absolute inset-4 border border-dashed border-paper/20"/>}
     <div className="pointer-events-none absolute bottom-5 left-5 font-display text-xs uppercase text-paper drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]">{label} · foto</div>
     <Maximize2 className="absolute right-5 top-5 h-5 w-5 text-hot transition-transform group-hover:scale-125" />
@@ -131,20 +133,19 @@ function Index() {
         <h2 className="mt-3 break-words font-display text-5xl font-bold uppercase xl:text-7xl">Fotogrammi.</h2>
         {/* Il pulsante "Vedi tutte le foto" prima stava qui accanto al titolo, in alto a destra — proprio dove
             finisce la bobina fissa, che lo copriva. Ora sta sotto la griglia, fuori da quella zona. */}
-        <div className="mt-8">
-          {/* aspect-video (16:9) = lo stesso rapporto esatto del sorgente (1920×1080): il video occupa
-              tutto lo spazio disponibile senza mai essere tagliato né deformato, indipendentemente dalla
-              larghezza dello schermo. .mp4 (H.264/AAC, stesso identico video di reel-lorenzo.mov, solo
-              ricontenitorizzato con ffmpeg -c copy): il .mov non è garantito in Firefox/Safari/mobile,
-              l'mp4 sì — su tutti i browser. */}
-          <div className="relative aspect-video w-full overflow-hidden border border-ink/20 bg-ink">
+        <div className="mt-8 grid gap-4 md:grid-cols-3">
+          {/* Altezza FISSA (non aspect-video libero): cresce per breakpoint ma resta sempre entro il
+              budget verticale della sezione (che deve stare nel 100% di schermo, non oltre). object-contain
+              (non -cover): il video .mp4 (1920×1080, H.264/AAC) resta SEMPRE intero e proporzionato — mai
+              tagliato né deformato — eventuali bande nere ai lati sono normali se il box è più largo del 16:9. */}
+          <div className="relative flex h-56 items-center justify-center overflow-hidden border border-ink/20 bg-ink sm:h-64 md:col-span-2 md:h-72 lg:h-80">
             <video controls preload="metadata" className="h-full w-full object-contain">
               <source src="/media/reel-lorenzo.mp4" type="video/mp4" />
             </video>
           </div>
-          <div className="mt-4 grid grid-cols-2 gap-4">
-            <PhotoFrame label="Teatro" src="/media/teatro-dialogo-proiezione-04.jpg" compact />
-            <PhotoFrame label="Editoriale" src="/media/editoriale-altalena-laterale-05.jpg" compact />
+          <div className="grid h-56 grid-rows-2 gap-4 sm:h-64 md:h-72 lg:h-80">
+            <PhotoFrame label="Teatro" src="/media/teatro-dialogo-proiezione-04.jpg" fill />
+            <PhotoFrame label="Editoriale" src="/media/editoriale-altalena-laterale-05.jpg" fill />
           </div>
         </div>
         <Link to="/galleria" className="mt-6 inline-flex items-center justify-center gap-2 rounded-none bg-ink px-6 py-3 font-display uppercase text-paper transition-colors hover:bg-hot">Vedi tutte le foto <ArrowUpRight /></Link>
