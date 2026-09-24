@@ -5,14 +5,14 @@ import { useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { ReelNav, sections, ids } from "@/components/reel-nav";
 
-// Lavori in evidenza: titoli reali forniti dal cliente. I link sono segnaposto ("#") in attesa degli URL
-// veri dei video (YouTube/Vimeo) — da sostituire quando disponibili.
+// Lavori in evidenza: titoli, link YouTube e miniature reali forniti dal cliente.
 const works = [
-  // Titolo parzialmente coperto nello screenshot di riferimento: da confermare/completare col cliente.
-  { title: "Shablo, Guè, Joshua – La Mia (2025) ft.", href: "#" },
-  { title: "Costa Crociere – Spot Sanremo 2024", href: "#" },
-  { title: "A Gift From God (2024) – Liana Marabini", href: "#" },
-  { title: "SPOT 60″ e 90″ – Poesia 2024 (Monge)", href: "#" },
+  // Link e titoli reali confermati dal cliente (verificati via oEmbed YouTube); le miniature sono
+  // fermi immagine reali dei video stessi, forniti dal cliente.
+  { title: "Shablo, Guè, Joshua – La Mia Parola (Sanremo 2025) ft. Tormento", href: "https://youtu.be/70vcIH3-4lU", img: "/media/lavoro-shablo-gue-joshua.png" },
+  { title: "Costa Crociere – The Sound of Wonder (Sanremo 2024)", href: "https://youtu.be/Mh8_5D34tMo", img: "/media/lavoro-costa-crociere.png" },
+  { title: "A Gift From God – Trailer ufficiale del film", href: "https://www.youtube.com/watch?v=fsx8_UggpkE", img: "/media/lavoro-gift-from-god.png" },
+  { title: "Monge – \"Che poesia\", spot Natale 2025", href: "https://www.youtube.com/watch?v=D9n7UrZcv7s", img: "/media/lavoro-monge-natale.png" },
 ];
 
 export const Route = createFileRoute("/")({
@@ -27,8 +27,12 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-function PhotoFrame({ label, tall = false, compact = false }: { label: string; tall?: boolean; compact?: boolean }) {
-  return <div className={`group relative overflow-hidden border border-paper/35 bg-muted ${tall ? "min-h-[28rem]" : compact ? "min-h-40" : "min-h-72"}`}><div className="absolute inset-4 border border-dashed border-paper/20"/><div className="absolute bottom-5 left-5 font-display text-xs uppercase text-muted-foreground">{label} · foto</div><Maximize2 className="absolute right-5 top-5 h-5 w-5 text-hot transition-transform group-hover:scale-125" /></div>;
+function PhotoFrame({ label, src, tall = false, compact = false }: { label: string; src?: string; tall?: boolean; compact?: boolean }) {
+  return <div className={`group relative overflow-hidden border border-paper/35 bg-muted ${tall ? "min-h-[28rem]" : compact ? "min-h-40" : "min-h-72"}`}>
+    {src ? <img src={src} alt={label} className="absolute inset-0 h-full w-full object-cover" /> : <div className="absolute inset-4 border border-dashed border-paper/20"/>}
+    <div className="pointer-events-none absolute bottom-5 left-5 font-display text-xs uppercase text-paper drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]">{label} · foto</div>
+    <Maximize2 className="absolute right-5 top-5 h-5 w-5 text-hot transition-transform group-hover:scale-125" />
+  </div>;
 }
 
 // --- Icone decorative che "fluttuano" per la pagina (forme geometriche semplici, in stile con le altre
@@ -90,23 +94,24 @@ function Index() {
 
       <section id="top" className="relative z-10 grid min-h-[100vh] items-center px-5 pb-14 pt-8 md:grid-cols-[1.1fr_.9fr] md:items-end md:px-10 lg:px-16">
         <div className="relative z-10 md:pb-10"><div className="mb-6 font-display text-sm uppercase text-hot">Portfolio / 2026</div><h1 className="max-w-5xl font-display text-[clamp(3.5rem,9vw,7rem)] font-bold uppercase leading-[.78]">Lorenzo<br/><span className="text-transparent [-webkit-text-stroke:1px_var(--paper)]">Blaconà</span></h1><p className="mt-6 font-display text-base uppercase md:text-xl">Attore • Cantante • Scrittore • Grafico</p><blockquote className="mt-8 border-l-2 border-hot pl-5 text-xl italic text-muted-foreground">“Un inguaribile sognatore...”</blockquote><ArrowDownRight className="mt-6 h-10 w-10 text-hot" /></div>
-        <div className="relative hidden h-[75vh] md:block"><div className="absolute inset-10 right-20 rotate-2 border-2 border-hot bg-muted"><span className="absolute bottom-5 left-5 text-xs uppercase text-muted-foreground">Ritratto principale · placeholder</span></div></div>
+        <div className="relative hidden h-[75vh] md:block"><div className="absolute inset-10 right-20 overflow-hidden rotate-2 border-2 border-hot bg-muted"><img src="/media/editoriale-scivolo-dallalto-02.jpg" alt="Lorenzo Blaconà" className="h-full w-full object-cover" /></div></div>
       </section>
 
-      <section id="bio" className="relative z-10 min-h-screen bg-paper px-5 py-14 text-ink md:px-12 md:py-16 lg:px-20"><FloatingMic className="slow-drift pointer-events-none absolute right-16 top-16 hidden h-24 w-16 text-ink/10 lg:block" /><div className="grid max-w-6xl gap-10 md:grid-cols-[.8fr_1.2fr]"><PhotoFrame label="Ritratto bio" tall/><div className="md:pt-14"><p className="font-display text-sm uppercase text-hot">02 / Bio</p><h2 className="mt-3 font-display text-5xl font-bold uppercase leading-none md:text-7xl">Tra palco<br/>e immagine.</h2><p className="mt-6 max-w-xl text-lg leading-relaxed">Lorenzo Blaconà attraversa linguaggi e discipline con uno sguardo personale: recitazione, voce, scrittura e progetto grafico diventano parti della stessa ricerca artistica. Una biografia in movimento, costruita tra scena, ascolto e immaginazione.</p><Button onClick={() => setModal("cv")} className="mt-6 rounded-none bg-ink px-7 py-6 text-paper hover:bg-hot">Vedi di più CV <ArrowUpRight/></Button></div></div></section>
+      <section id="bio" className="relative z-10 min-h-screen bg-paper px-5 py-14 text-ink md:px-12 md:py-16 lg:px-20"><FloatingMic className="slow-drift pointer-events-none absolute right-16 top-16 hidden h-24 w-16 text-ink/10 lg:block" /><div className="grid max-w-6xl gap-10 md:grid-cols-[.8fr_1.2fr]"><PhotoFrame label="Ritratto" src="/media/ritratto-studio-giacca-occhiali.jpg" tall/><div className="md:pt-14"><p className="font-display text-sm uppercase text-hot">02 / Bio</p><h2 className="mt-3 font-display text-5xl font-bold uppercase leading-none md:text-7xl">Tra palco<br/>e immagine.</h2><p className="mt-6 max-w-xl text-lg leading-relaxed">Lorenzo Blaconà attraversa linguaggi e discipline con uno sguardo personale: recitazione, voce, scrittura e progetto grafico diventano parti della stessa ricerca artistica. Una biografia in movimento, costruita tra scena, ascolto e immaginazione.</p><Button onClick={() => setModal("cv")} className="mt-6 rounded-none bg-ink px-7 py-6 text-paper hover:bg-hot">Vedi di più CV <ArrowUpRight/></Button></div></div></section>
 
       <section id="lavori" className="relative z-10 min-h-screen bg-ink px-5 py-14 md:px-12 md:py-16 lg:px-20">
         <FloatingClapper className="slow-drift pointer-events-none absolute right-16 top-20 hidden h-20 w-24 text-paper/10 lg:block" />
         <p className="font-display text-sm uppercase text-hot">03 / Lavori</p>
-        <h2 className="mt-3 max-w-4xl font-display text-5xl font-bold uppercase leading-none xl:text-7xl">Quello<br/>sono io.</h2>
+        <h2 className="mt-3 max-w-4xl font-display text-5xl font-bold uppercase leading-none xl:text-7xl">Quello<br/>sono io!</h2>
         <p className="mt-4 max-w-xl text-lg text-muted-foreground">Clicca sui titoli, potrebbero portarti in posti magici... (come YouTube)</p>
         <div className="mt-8 grid gap-x-6 gap-y-6 sm:grid-cols-2 xl:grid-cols-4">
           {works.map((w) => (
             <a key={w.title} href={w.href} target="_blank" rel="noreferrer" className="group block">
               <div className="relative min-h-40 overflow-hidden border border-paper/20 bg-muted">
-                <div className="absolute inset-4 border border-dashed border-paper/20" />
+                <img src={w.img} alt={w.title} className="absolute inset-0 h-full w-full object-cover transition-transform group-hover:scale-105" />
+                <div className="absolute inset-0 bg-ink/25 transition-colors group-hover:bg-ink/10" />
                 <div className="absolute inset-0 grid place-items-center">
-                  <Play className="h-10 w-10 text-hot opacity-70 transition-transform group-hover:scale-110" />
+                  <Play className="h-10 w-10 text-paper opacity-90 drop-shadow-[0_1px_6px_rgba(0,0,0,0.8)] transition-transform group-hover:scale-110" />
                 </div>
               </div>
               <h3 className="mt-3 font-display text-base uppercase leading-snug text-paper group-hover:text-hot">{w.title}</h3>
@@ -126,15 +131,21 @@ function Index() {
         <h2 className="mt-3 break-words font-display text-5xl font-bold uppercase xl:text-7xl">Fotogrammi.</h2>
         {/* Il pulsante "Vedi tutte le foto" prima stava qui accanto al titolo, in alto a destra — proprio dove
             finisce la bobina fissa, che lo copriva. Ora sta sotto la griglia, fuori da quella zona. */}
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
-          <div className="relative min-h-56 overflow-hidden border border-ink/20 bg-muted md:col-span-2">
-            {/* Video principale: metti il file in public/media/reelLorenzo.mov (il nome che ci hai indicato). */}
-            <video controls preload="none" className="h-full max-h-80 w-full bg-ink object-cover">
-              <source src="/media/reelLorenzo.mov" />
+        <div className="mt-8">
+          {/* aspect-video (16:9) = lo stesso rapporto esatto del sorgente (1920×1080): il video occupa
+              tutto lo spazio disponibile senza mai essere tagliato né deformato, indipendentemente dalla
+              larghezza dello schermo. .mp4 (H.264/AAC, stesso identico video di reel-lorenzo.mov, solo
+              ricontenitorizzato con ffmpeg -c copy): il .mov non è garantito in Firefox/Safari/mobile,
+              l'mp4 sì — su tutti i browser. */}
+          <div className="relative aspect-video w-full overflow-hidden border border-ink/20 bg-ink">
+            <video controls preload="metadata" className="h-full w-full object-contain">
+              <source src="/media/reel-lorenzo.mp4" type="video/mp4" />
             </video>
-            <div className="pointer-events-none absolute bottom-5 left-5 font-display text-xs uppercase text-muted-foreground">Video reel</div>
           </div>
-          <div className="grid gap-4"><PhotoFrame label="Scena 01" compact /><PhotoFrame label="Ritratto 02" compact /></div>
+          <div className="mt-4 grid grid-cols-2 gap-4">
+            <PhotoFrame label="Teatro" src="/media/teatro-dialogo-proiezione-04.jpg" compact />
+            <PhotoFrame label="Editoriale" src="/media/editoriale-altalena-laterale-05.jpg" compact />
+          </div>
         </div>
         <Link to="/galleria" className="mt-6 inline-flex items-center justify-center gap-2 rounded-none bg-ink px-6 py-3 font-display uppercase text-paper transition-colors hover:bg-hot">Vedi tutte le foto <ArrowUpRight /></Link>
       </section>
