@@ -66,14 +66,14 @@ export function ReelNav({ active }: { active: number }) {
     return () => controls.stop();
   }, [active, wheelAngle]);
 
-  return <nav aria-label="Navigazione principale" className="fixed -right-25 -top-25 z-150 h-[32rem] w-[32rem] origin-top-right rounded-bl-[80%] scale-[0.6] sm:-right-27 sm:-top-27 sm:scale-[0.65] md:-right-31 md:-top-31 md:scale-[0.75] xl:-right-42 xl:-top-42 xl:scale-100">
+  return <nav aria-label="Navigazione principale" className="fixed -right-31 -top-31 z-150 h-[32rem] w-[32rem] origin-top-right rounded-bl-[80%] scale-[0.75] sm:-right-34 sm:-top-34 sm:scale-[0.8] md:-right-36 md:-top-36 md:scale-[0.85] xl:-right-42 xl:-top-42 xl:scale-100">
     {/* La STESSA identica bobina ad ogni larghezza di schermo (nessuna barra/stile diverso su mobile): cambia
         solo la scala, sempre "incastonata" nell'angolo in alto a destra — sbordando leggermente fuori dal
         bordo dello schermo esattamente come su desktop (non un cerchio pieno e fluttuante su telefono).
         L'offset negativo (-right/-top) è proporzionale alla scala di ogni breakpoint, così la percentuale di
         disco tagliata dal bordo resta la stessa a ogni larghezza. Cellulare piccolo → tablet → desktop:
-        0.6 → 0.65 (da 640px) → 0.75 (da 768px) → 1 (piena, da 1280px). Scala mobile alzata da 0.38 a
-        0.6: sotto quella soglia le scritte (font fisso, scalato col resto) diventavano illeggibili. */}
+        0.75 → 0.8 (da 640px) → 0.85 (da 768px) → 1 (piena, da 1280px). Scala mobile volutamente alta:
+        sotto quella soglia le scritte (font fisso, scalato col resto) diventavano illeggibili. */}
     {/* Contenitore generale (l'angolo a quarto di cerchio in alto a destra): h-/w- = dimensione totale, rounded-bl-[%] = quanto è arrotondato l'angolo */}
 
     <FilmStrip />
@@ -155,16 +155,53 @@ const FILM_HOLE_GAP = 1.4; // rem — passo tra un forellino e il successivo (fo
 // forellino) diviso 2 — così il forellino resta sempre esattamente a metà del bordo nero, qualunque sia
 // FILM_WIDTH, invece di un valore fisso che poteva finire storto se la striscia cambiava larghezza.
 const FILM_HOLE_INSET = ((FILM_WIDTH - FILM_FRAME_WIDTH) / 2 - FILM_HOLE) / 2; // rem
-const FILM_MAX_VH = 82;    // fino a che percentuale dell'altezza schermo può arrivare, a scroll ultimato
 
 function FilmStrip() {
-  const { scrollYProgress } = useScroll();
-  const height = useTransform(scrollYProgress, [0, 1], ["0vh", `${FILM_MAX_VH}vh`]);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollY } = useScroll();
+  // Il <nav> (e quindi questa striscia) è "fixed": qualunque cosa oltre il bordo inferiore dello SCHERMO
+  // è semplicemente invisibile, non importa quanto la si faccia "alta" — non esiste modo di farla arrivare
+  // al fondo del DOCUMENTO restando agganciata alla bobina fissa. Quindi qui puntiamo al fondo dello
+  // SCHERMO (viewportCap), che è il vero "fino in fondo alla pagina" raggiungibile da un elemento fixed.
+  // contattiDocTop = posizione (nel documento) del bordo alto di "Contatti": usata per calcolare, ad ogni
+  // istante di scroll, dove si trova QUELLA sezione sullo schermo in questo preciso momento — il terzo
+  // limite (contattiLiveCap) tiene l'altezza sempre entro quel bordo, per costruzione, così la pellicola
+  // non lo supera mai (si "appoggia sopra" invece di disegnarsi sopra il testo dei contatti).
+  const geometry = useRef({ stripTop: 0, contattiDocTop: Infinity });
+
+  useEffect(() => {
+    function measure() {
+      const stripTop = containerRef.current?.getBoundingClientRect().top ?? 0;
+      const contatti = document.getElementById("contatti");
+      const contattiDocTop = contatti ? contatti.getBoundingClientRect().top + window.scrollY : Infinity;
+      geometry.current = { stripTop, contattiDocTop };
+    }
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
+
+  const rawHeight = useTransform(scrollY, (y) => {
+    // typeof window: in SSR (TanStack Start) questa funzione viene comunque valutata una volta lato
+    // server, dove "window" non esiste — senza guardia l'intera pagina cadeva in client-side rendering.
+    if (typeof window === "undefined") return 0;
+    const { stripTop, contattiDocTop } = geometry.current;
+    const viewportCap = Math.max(0, window.innerHeight - stripTop);
+    const contattiLiveCap = Math.max(0, contattiDocTop - y - stripTop);
+    return Math.max(0, Math.min(y, viewportCap, contattiLiveCap));
+  });
+  // Leggero ondeggiamento organico (due frequenze non multiple tra loro, quindi il moto non si ripete mai
+  // in modo identico): sembra un filo srotolato a mano, storto quel poco che basta, non una riga perfetta.
+  const swayX = useTransform(rawHeight, (h) => 7 * Math.sin(h / 90) + 3 * Math.sin(h / 33 + 1.4));
+  const swayRotate = useTransform(rawHeight, (h) => 1.4 * Math.sin(h / 150 + 0.6));
+  const heightPx = useTransform(rawHeight, (h) => `${h}px`);
+
   return (
     <motion.div
+      ref={containerRef}
       aria-hidden="true"
       className="pointer-events-none absolute overflow-hidden"
-      style={{ right: "10.5rem", top: "22.25rem", width: `${FILM_WIDTH}rem`, height }}
+      style={{ right: "10.5rem", top: "22.25rem", width: `${FILM_WIDTH}rem`, height: heightPx, x: swayX, rotate: swayRotate, transformOrigin: "top center" }}
     >
       {/* Dentro al <nav>, POSIZIONATA nelle sue stesse coordinate (non "fixed" indipendente): eredita
           automaticamente la stessa scala/posizione della bobina ad ogni larghezza di schermo (telefono

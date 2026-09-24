@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { ArrowDownRight, ArrowUpRight, Instagram, Mail, Maximize2, Phone, Play, X } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useState, type CSSProperties, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { ReelNav, sections, ids } from "@/components/reel-nav";
 
@@ -40,9 +40,9 @@ function PhotoFrame({ label, src, tall = false, compact = false, fill = false }:
 // --- Icone decorative che "fluttuano" per la pagina (forme geometriche semplici, in stile con le altre
 // icone del sito) — puro tratto (stroke), nessuna immagine. slow-drift è l'animazione già definita in
 // styles.css. Sempre pointer-events-none: sono solo decorazione, non devono intercettare click.
-function FloatingMic({ className }: { className?: string }) {
+function FloatingMic({ className, style }: { className?: string; style?: CSSProperties }) {
   return (
-    <svg viewBox="0 0 64 96" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+    <svg viewBox="0 0 64 96" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className} style={style} aria-hidden="true">
       <rect x="20" y="4" width="24" height="42" rx="12" />
       <path d="M12 42a20 20 0 0 0 40 0" />
       <line x1="32" y1="62" x2="32" y2="82" />
@@ -51,9 +51,9 @@ function FloatingMic({ className }: { className?: string }) {
   );
 }
 
-function FloatingClapper({ className }: { className?: string }) {
+function FloatingClapper({ className, style }: { className?: string; style?: CSSProperties }) {
   return (
-    <svg viewBox="0 0 96 80" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+    <svg viewBox="0 0 96 80" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className} style={style} aria-hidden="true">
       <rect x="6" y="26" width="84" height="48" />
       <path d="M6 26 14 6 90 6 82 26Z" />
       <line x1="24" y1="6" x2="16" y2="26" />
@@ -64,9 +64,9 @@ function FloatingClapper({ className }: { className?: string }) {
   );
 }
 
-function FloatingMasks({ className }: { className?: string }) {
+function FloatingMasks({ className, style }: { className?: string; style?: CSSProperties }) {
   return (
-    <svg viewBox="0 0 120 80" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className={className} aria-hidden="true">
+    <svg viewBox="0 0 120 80" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className={className} style={style} aria-hidden="true">
       <circle cx="40" cy="40" r="32" />
       <circle cx="80" cy="40" r="32" />
       <path d="M26 48q14 14 28 0" />
@@ -75,6 +75,46 @@ function FloatingMasks({ className }: { className?: string }) {
       <circle cx="50" cy="30" r="2.5" fill="currentColor" stroke="none" />
       <circle cx="70" cy="30" r="2.5" fill="currentColor" stroke="none" />
       <circle cx="90" cy="30" r="2.5" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+// Stessa "famiglia" delle due curve dell'hero (linea piena + linea sottile tratteggiata che "scorre" con
+// la classe neon-trail già in styles.css), ma con DUE viewBox dedicati — uno diagonale, uno verticale —
+// invece di stirarne uno solo con preserveAspectRatio="none" (deformava la curva). "wild" rompe lo schema
+// "1 piena + 1 tratteggiata" sempre uguale: due tratteggiate che si incrociano in direzioni opposte, per
+// un po' di varietà/casino invece della stessa coppia ripetuta ovunque. Colori sempre dalla palette del
+// sito (--signal, --hot, --ink, --paper), mai nuovi. pointer-events-none + aria-hidden: puro ornamento.
+function FloatingSquiggle({ className, style, variant = "diagonal", solidColor = "var(--signal)", dashColor = "var(--hot)", wild = false }: {
+  className?: string;
+  style?: CSSProperties;
+  variant?: "diagonal" | "vertical";
+  solidColor?: string;
+  dashColor?: string;
+  wild?: boolean;
+}) {
+  if (variant === "vertical") {
+    return (
+      <svg viewBox="0 0 220 640" fill="none" className={className} style={style} aria-hidden="true">
+        {wild ? (<>
+          <path className="neon-trail" d="M40 -20 C 170 110, 10 230, 160 330 S 30 540, 170 660" stroke={solidColor} strokeWidth="5" />
+          <path className="neon-trail" d="M190 -20 C 40 130, 210 250, 40 350 S 200 550, 30 660" stroke={dashColor} strokeWidth="5" />
+        </>) : (<>
+          <path d="M60 -20 C 190 120, 10 240, 150 340 S 20 540, 150 660" stroke={solidColor} strokeWidth="12" />
+          <path className="neon-trail" d="M115 -20 C 255 130, 55 260, 195 360 S 65 560, 195 660" stroke={dashColor} strokeWidth="5" />
+        </>)}
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 640 220" fill="none" className={className} style={style} aria-hidden="true">
+      {wild ? (<>
+        <path className="neon-trail" d="M-20 40 C 100 170, 220 10, 320 170 S 540 30, 660 170" stroke={solidColor} strokeWidth="5" />
+        <path className="neon-trail" d="M-20 190 C 130 40, 250 210, 350 40 S 550 190, 660 40" stroke={dashColor} strokeWidth="5" />
+      </>) : (<>
+        <path d="M-20 155 C 110 55, 195 210, 320 110 S 525 35, 660 95" stroke={solidColor} strokeWidth="12" />
+        <path className="neon-trail" d="M-20 185 C 135 90, 225 235, 355 145 S 555 65, 660 125" stroke={dashColor} strokeWidth="5" />
+      </>)}
     </svg>
   );
 }
@@ -95,14 +135,21 @@ function Index() {
       <svg aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-70" viewBox="0 0 1200 900" preserveAspectRatio="none"><path d="M-100 700 C 260 310, 500 980, 1300 160" fill="none" stroke="var(--signal)" strokeWidth="22"/><path className="neon-trail" d="M-100 770 C 300 350, 650 1000, 1300 290" fill="none" stroke="var(--hot)" strokeWidth="6"/></svg>
 
       <section id="top" className="relative z-10 grid min-h-[100vh] items-center px-5 pb-14 pt-8 md:grid-cols-[1.1fr_.9fr] md:items-end md:px-10 lg:px-16">
-        <div className="relative z-10 md:pb-10"><div className="mb-6 font-display text-sm uppercase text-hot">Portfolio / 2026</div><h1 className="max-w-5xl font-display text-[clamp(3.5rem,9vw,7rem)] font-bold uppercase leading-[.78]">Lorenzo<br/><span className="text-transparent [-webkit-text-stroke:1px_var(--paper)]">Blaconà</span></h1><p className="mt-6 font-display text-base uppercase md:text-xl">Attore • Cantante • Scrittore • Grafico</p><blockquote className="mt-8 border-l-2 border-hot pl-5 text-xl italic text-muted-foreground">“Un inguaribile sognatore...”</blockquote><ArrowDownRight className="mt-6 h-10 w-10 text-hot" /></div>
+        {/* Spazio vuoto sopra al nome: piccole icone che fluttuano (stesso stile delle altre nel sito,
+            solo tratto, nessuna immagine), sparse senza toccarsi, a tema con Lorenzo (voce, scena,
+            teatro). Nascoste su mobile (lì lo spazio sopra il nome è troppo stretto per non affollarlo). */}
+        <FloatingMic className="slow-drift pointer-events-none absolute left-[6%] top-10 hidden h-16 w-11 -rotate-6 text-hot/20 md:block" />
+        <FloatingClapper className="slow-drift pointer-events-none absolute left-[30%] top-24 hidden h-12 w-16 rotate-6 text-paper/15 md:block" style={{ animationDelay: "-2.5s" }} />
+        <FloatingMasks className="slow-drift pointer-events-none absolute left-[52%] top-6 hidden h-11 w-16 -rotate-3 text-hot/15 md:block" style={{ animationDelay: "-5s" }} />
+        <div className="relative z-10 md:pb-10"><div className="mb-6 font-display text-sm uppercase text-hot">Portfolio / 2026</div><h1 className="max-w-5xl font-display text-[clamp(3.5rem,9vw,7rem)] font-bold uppercase leading-[.78]">Lorenzo<br/><span className="text-transparent [-webkit-text-stroke:1px_var(--paper)]">Blaconà</span></h1><p className="mt-6 font-display text-base uppercase md:text-xl">Attore • Cantante • Scrittore • Grafico</p><ArrowDownRight className="mt-6 h-10 w-10 text-hot" /></div>
         <div className="relative hidden h-[75vh] md:block"><div className="absolute inset-10 right-20 overflow-hidden rotate-2 border-2 border-hot bg-muted"><img src="/media/editoriale-scivolo-dallalto-02.jpg" alt="Lorenzo Blaconà" className="h-full w-full object-cover" /></div></div>
       </section>
 
-      <section id="bio" className="relative z-10 min-h-screen bg-paper px-5 py-14 text-ink md:px-12 md:py-16 lg:px-20"><FloatingMic className="slow-drift pointer-events-none absolute right-16 top-16 hidden h-24 w-16 text-ink/10 lg:block" /><div className="grid max-w-6xl gap-10 md:grid-cols-[.8fr_1.2fr]"><PhotoFrame label="Ritratto" src="/media/ritratto-studio-giacca-occhiali.jpg" tall/><div className="md:pt-14"><p className="font-display text-sm uppercase text-hot">02 / Bio</p><h2 className="mt-3 font-display text-5xl font-bold uppercase leading-none md:text-7xl">Tra palco<br/>e immagine.</h2><p className="mt-6 max-w-xl text-lg leading-relaxed">Lorenzo Blaconà attraversa linguaggi e discipline con uno sguardo personale: recitazione, voce, scrittura e progetto grafico diventano parti della stessa ricerca artistica. Una biografia in movimento, costruita tra scena, ascolto e immaginazione.</p><Button onClick={() => setModal("cv")} className="mt-6 rounded-none bg-ink px-7 py-6 text-paper hover:bg-hot">Vedi di più CV <ArrowUpRight/></Button></div></div></section>
+      <section id="bio" className="relative z-10 min-h-screen overflow-hidden bg-paper px-5 py-14 text-ink md:px-12 md:py-16 lg:px-20"><FloatingMic className="slow-drift pointer-events-none absolute right-16 top-16 hidden h-24 w-16 text-ink/10 lg:block" /><FloatingSquiggle solidColor="var(--ink)" dashColor="var(--hot)" variant="diagonal" className="pointer-events-none absolute inset-x-0 bottom-12 hidden h-48 w-full lg:block" style={{ opacity: 0.65 }} /><div className="grid max-w-6xl gap-10 md:grid-cols-[.8fr_1.2fr]"><PhotoFrame label="Ritratto" src="/media/ritratto-studio-giacca-occhiali.jpg" tall/><div className="md:pt-14"><p className="font-display text-sm uppercase text-hot">02 / Bio</p><h2 className="mt-3 font-display text-5xl font-bold uppercase leading-none md:text-7xl">Tra palco<br/>e immagine.</h2><p className="mt-6 max-w-xl text-lg leading-relaxed">Lorenzo Blaconà attraversa linguaggi e discipline con uno sguardo personale: recitazione, voce, scrittura e progetto grafico diventano parti della stessa ricerca artistica. Una biografia in movimento, costruita tra scena, ascolto e immaginazione.</p><Button onClick={() => setModal("cv")} className="mt-6 rounded-none bg-ink px-7 py-6 text-paper hover:bg-hot">Vedi di più CV <ArrowUpRight/></Button></div></div></section>
 
-      <section id="lavori" className="relative z-10 min-h-screen bg-ink px-5 py-14 md:px-12 md:py-16 lg:px-20">
+      <section id="lavori" className="relative z-10 min-h-screen overflow-hidden bg-ink px-5 py-14 md:px-12 md:py-16 lg:px-20">
         <FloatingClapper className="slow-drift pointer-events-none absolute right-16 top-20 hidden h-20 w-24 text-paper/10 lg:block" />
+        <FloatingSquiggle variant="diagonal" wild className="pointer-events-none absolute inset-x-0 top-24 hidden h-48 w-full lg:block" style={{ opacity: 0.65 }} />
         <p className="font-display text-sm uppercase text-hot">03 / Lavori</p>
         <h2 className="mt-3 max-w-4xl font-display text-5xl font-bold uppercase leading-none xl:text-7xl">Quello<br/>sono io!</h2>
         <p className="mt-4 max-w-xl text-lg text-muted-foreground">Clicca sui titoli, potrebbero portarti in posti magici... (come YouTube)</p>
@@ -153,9 +200,14 @@ function Index() {
         <Link to="/galleria" className="mt-4 inline-flex items-center justify-center gap-2 rounded-none bg-ink px-6 py-3 font-display uppercase text-paper transition-colors hover:bg-hot">Vedi tutte le foto <ArrowUpRight /></Link>
       </section>
 
-      <section id="press" className="relative z-10 min-h-screen bg-signal px-5 py-14 text-paper md:px-12 md:py-16 lg:px-20"><FloatingMasks className="slow-drift pointer-events-none absolute right-16 top-20 hidden h-16 w-24 text-paper/15 lg:block" /><p className="font-display text-sm uppercase">05 / Parlano di me</p><h2 className="mt-3 max-w-4xl font-display text-5xl font-bold uppercase leading-none xl:text-8xl">Rassegna<br/>stampa.</h2><div className="mt-8 grid gap-px bg-paper/30 md:grid-cols-3">{["Una presenza scenica magnetica","Nuove voci della scena italiana","Il segno incontra la parola"].map((t,i)=><article key={t} className="min-h-56 bg-signal p-7"><span className="text-xs uppercase">Articolo 0{i+1} / Placeholder</span><h3 className="mt-10 font-display text-3xl leading-tight">{t}</h3><p className="mt-4 text-paper/75">Testata, data e breve estratto saranno inseriti qui.</p></article>)}</div><Link to="/news" className="mt-6 inline-flex items-center gap-2 rounded-none bg-paper px-6 py-3 font-display uppercase text-ink transition-colors hover:bg-ink hover:text-paper">Vedi di più news <ArrowUpRight/></Link></section>
+      <section id="press" className="relative z-10 min-h-screen overflow-hidden bg-signal px-5 py-14 text-paper md:px-12 md:py-16 lg:px-20"><FloatingMasks className="slow-drift pointer-events-none absolute right-16 top-20 hidden h-16 w-24 text-paper/15 lg:block" /><FloatingSquiggle solidColor="var(--paper)" dashColor="var(--ink)" variant="vertical" className="pointer-events-none absolute inset-y-0 left-16 hidden h-screen w-48 lg:block" style={{ opacity: 0.65 }} /><p className="font-display text-sm uppercase">05 / Parlano di me</p><h2 className="mt-3 max-w-4xl font-display text-5xl font-bold uppercase leading-none xl:text-8xl">Rassegna<br/>stampa.</h2><div className="mt-8 grid gap-px bg-paper/30 md:grid-cols-3">{["Una presenza scenica magnetica","Nuove voci della scena italiana","Il segno incontra la parola"].map((t,i)=><article key={t} className="min-h-56 bg-signal p-7"><span className="text-xs uppercase">Articolo 0{i+1} / Placeholder</span><h3 className="mt-10 font-display text-3xl leading-tight">{t}</h3><p className="mt-4 text-paper/75">Testata, data e breve estratto saranno inseriti qui.</p></article>)}</div><Link to="/news" className="mt-6 inline-flex items-center gap-2 rounded-none bg-paper px-6 py-3 font-display uppercase text-ink transition-colors hover:bg-ink hover:text-paper">Vedi di più news <ArrowUpRight/></Link></section>
 
-      <footer id="contatti" className="relative z-10 min-h-screen bg-ink px-5 py-14 md:px-12 md:py-16 lg:px-20">
+      <footer id="contatti" className="relative z-10 min-h-screen overflow-hidden bg-ink px-5 py-14 md:px-12 md:py-16 lg:px-20">
+        <FloatingSquiggle solidColor="var(--hot)" dashColor="var(--paper)" variant="diagonal" wild className="pointer-events-none absolute inset-x-0 bottom-16 hidden h-48 w-full lg:block" style={{ opacity: 0.65 }} />
+        {/* "Un inguaribile sognatore...": prima era la prima cosa che si leggeva in home, ora è un piccolo
+            easter egg in fondo alla pagina — ci si imbatte per caso, non è più in vetrina. Posizionata
+            "absolute" apposta: non entra nel flusso normale, quindi non allunga la sezione oltre il 100vh. */}
+        <p className="pointer-events-none absolute bottom-24 right-6 hidden max-w-[10rem] -rotate-3 text-right font-display text-xs italic text-muted-foreground/50 md:block">“Un inguaribile sognatore...”</p>
         <p className="font-display text-sm uppercase text-hot">06 / Contatti</p>
         <h2 className="mt-3 max-w-5xl font-display text-[clamp(3.5rem,9vw,7rem)] font-bold uppercase leading-[.82]">Facciamo<br/><span className="text-hot">qualcosa.</span></h2>
         <p className="mt-6 max-w-xl text-lg text-muted-foreground">Per proposte di lavoro, collaborazioni artistiche o richieste stampa: scrivimi direttamente, oppure passa dal booking.</p>
