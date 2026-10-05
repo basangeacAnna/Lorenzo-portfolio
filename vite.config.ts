@@ -12,4 +12,9 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  // Permette richieste dal tunnel pubblico temporaneo (localtunnel, dominio *.loca.lt) usato per
+  // condividere il sito in anteprima — da togliere quando non serve più condividerlo così.
+  vite: {
+    server: { allowedHosts: [".loca.lt"] },
+  },
 });
