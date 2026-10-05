@@ -1,8 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
-import { ArrowDownRight, ArrowUpRight, Instagram, Mail, Maximize2, Phone, Play, X } from "lucide-react";
-import { useState, type CSSProperties, type ReactNode } from "react";
-import { Button } from "@/components/ui/button";
+import { useMotionValueEvent, useScroll } from "framer-motion";
+import { ArrowDownRight, ArrowUpRight, Instagram, Mail, Maximize2, Play } from "lucide-react";
+import { useState, type CSSProperties } from "react";
 import { ReelNav, sections, ids } from "@/components/reel-nav";
 
 // Lavori in evidenza: titoli, link YouTube e miniature reali forniti dal cliente.
@@ -79,53 +78,59 @@ function FloatingMasks({ className, style }: { className?: string; style?: CSSPr
   );
 }
 
+// Nota musicale (cantante) e penna (scrittore): completano il set a tema coi 4 mestieri di Lorenzo
+// (attore/clapper+masks, cantante/mic+nota, scrittore/penna, grafico/quadrati-cerchi sparsi).
+function FloatingNote({ className, style }: { className?: string; style?: CSSProperties }) {
+  return (
+    <svg viewBox="0 0 48 64" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className} style={style} aria-hidden="true">
+      <circle cx="12" cy="52" r="8" />
+      <line x1="20" y1="52" x2="20" y2="8" />
+      <path d="M20 8 L40 14 L40 24 L20 18 Z" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function FloatingPen({ className, style }: { className?: string; style?: CSSProperties }) {
+  return (
+    <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className} style={style} aria-hidden="true">
+      <path d="M48 6 L58 16 L22 52 L10 54 L12 42 Z" />
+      <line x1="10" y1="54" x2="6" y2="58" />
+    </svg>
+  );
+}
+
 // Stessa "famiglia" delle due curve dell'hero (linea piena + linea sottile tratteggiata che "scorre" con
 // la classe neon-trail già in styles.css), ma con DUE viewBox dedicati — uno diagonale, uno verticale —
 // invece di stirarne uno solo con preserveAspectRatio="none" (deformava la curva). "wild" rompe lo schema
 // "1 piena + 1 tratteggiata" sempre uguale: due tratteggiate che si incrociano in direzioni opposte, per
 // un po' di varietà/casino invece della stessa coppia ripetuta ovunque. Colori sempre dalla palette del
 // sito (--signal, --hot, --ink, --paper), mai nuovi. pointer-events-none + aria-hidden: puro ornamento.
-function FloatingSquiggle({ className, style, variant = "diagonal", solidColor = "var(--signal)", dashColor = "var(--hot)", wild = false }: {
+function FloatingSquiggle({ className, style, solidColor = "var(--signal)", dashColor = "var(--hot)", wild = false }: {
   className?: string;
   style?: CSSProperties;
-  variant?: "diagonal" | "vertical";
   solidColor?: string;
   dashColor?: string;
   wild?: boolean;
 }) {
-  if (variant === "vertical") {
-    return (
-      <svg viewBox="0 0 220 640" fill="none" className={className} style={style} aria-hidden="true">
-        {wild ? (<>
-          <path className="neon-trail" d="M40 -20 C 170 110, 10 230, 160 330 S 30 540, 170 660" stroke={solidColor} strokeWidth="5" />
-          <path className="neon-trail" d="M190 -20 C 40 130, 210 250, 40 350 S 200 550, 30 660" stroke={dashColor} strokeWidth="5" />
-        </>) : (<>
-          <path d="M60 -20 C 190 120, 10 240, 150 340 S 20 540, 150 660" stroke={solidColor} strokeWidth="12" />
-          <path className="neon-trail" d="M115 -20 C 255 130, 55 260, 195 360 S 65 560, 195 660" stroke={dashColor} strokeWidth="5" />
-        </>)}
-      </svg>
-    );
-  }
+  // Stesso identico viewBox (1200×900) e preserveAspectRatio="none" delle due curve dell'hero: va
+  // posizionata con "inset-0 h-full w-full" (MAI una fascia stretta) così si stira a riempire l'INTERA
+  // sezione che la ospita, esattamente come in home — non una decorazione piccola in un angolo.
+  // "non-wild" riusa letteralmente lo stesso path dell'hero; "wild" è un pattern diverso per varietà.
   return (
-    <svg viewBox="0 0 640 220" fill="none" className={className} style={style} aria-hidden="true">
+    <svg viewBox="0 0 1200 900" fill="none" preserveAspectRatio="none" className={className} style={style} aria-hidden="true">
       {wild ? (<>
-        <path className="neon-trail" d="M-20 40 C 100 170, 220 10, 320 170 S 540 30, 660 170" stroke={solidColor} strokeWidth="5" />
-        <path className="neon-trail" d="M-20 190 C 130 40, 250 210, 350 40 S 550 190, 660 40" stroke={dashColor} strokeWidth="5" />
+        <path className="neon-trail" d="M-100 150 C 260 700, 550 50, 900 550 S 1300 100, 1300 750" stroke={solidColor} strokeWidth="18" />
+        <path className="neon-trail" d="M-100 800 C 300 250, 650 850, 950 250 S 1300 800, 1300 150" stroke={dashColor} strokeWidth="6" />
       </>) : (<>
-        <path d="M-20 155 C 110 55, 195 210, 320 110 S 525 35, 660 95" stroke={solidColor} strokeWidth="12" />
-        <path className="neon-trail" d="M-20 185 C 135 90, 225 235, 355 145 S 555 65, 660 125" stroke={dashColor} strokeWidth="5" />
+        <path d="M-100 700 C 260 310, 500 980, 1300 160" stroke={solidColor} strokeWidth="22" />
+        <path className="neon-trail" d="M-100 770 C 300 350, 650 1000, 1300 290" stroke={dashColor} strokeWidth="6" />
       </>)}
     </svg>
   );
 }
 
-function Modal({ title, children, close }: { title: string; children: ReactNode; close: () => void }) {
-  return <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[200] grid place-items-center bg-ink/90 p-5" onClick={close}><motion.div initial={{ y: 40, rotate: -1 }} animate={{ y: 0, rotate: 0 }} exit={{ y: 30, opacity: 0 }} onClick={e => e.stopPropagation()} className="max-h-[85vh] w-full max-w-4xl overflow-y-auto border border-hot bg-card p-6 md:p-12"><div className="mb-10 flex items-start justify-between gap-4"><h2 className="font-display text-4xl md:text-6xl">{title}</h2><Button size="icon" variant="ghost" aria-label="Chiudi" onClick={close}><X /></Button></div>{children}</motion.div></motion.div>;
-}
-
 function Index() {
   const [active, setActive] = useState(0);
-  const [modal, setModal] = useState<"cv" | null>(null);
   const { scrollYProgress } = useScroll();
   useMotionValueEvent(scrollYProgress, "change", v => setActive(Math.min(sections.length - 1, Math.floor(v * sections.length))));
 
@@ -135,21 +140,34 @@ function Index() {
       <svg aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-70" viewBox="0 0 1200 900" preserveAspectRatio="none"><path d="M-100 700 C 260 310, 500 980, 1300 160" fill="none" stroke="var(--signal)" strokeWidth="22"/><path className="neon-trail" d="M-100 770 C 300 350, 650 1000, 1300 290" fill="none" stroke="var(--hot)" strokeWidth="6"/></svg>
 
       <section id="top" className="relative z-10 grid min-h-[100vh] items-center px-5 pb-14 pt-8 md:grid-cols-[1.1fr_.9fr] md:items-end md:px-10 lg:px-16">
-        {/* Spazio vuoto sopra al nome: piccole icone che fluttuano (stesso stile delle altre nel sito,
-            solo tratto, nessuna immagine), sparse senza toccarsi, a tema con Lorenzo (voce, scena,
-            teatro). Nascoste su mobile (lì lo spazio sopra il nome è troppo stretto per non affollarlo). */}
-        <FloatingMic className="slow-drift pointer-events-none absolute left-[6%] top-10 hidden h-16 w-11 -rotate-6 text-hot/20 md:block" />
-        <FloatingClapper className="slow-drift pointer-events-none absolute left-[30%] top-24 hidden h-12 w-16 rotate-6 text-paper/15 md:block" style={{ animationDelay: "-2.5s" }} />
-        <FloatingMasks className="slow-drift pointer-events-none absolute left-[52%] top-6 hidden h-11 w-16 -rotate-3 text-hot/15 md:block" style={{ animationDelay: "-5s" }} />
-        <div className="relative z-10 md:pb-10"><div className="mb-6 font-display text-sm uppercase text-hot">Portfolio / 2026</div><h1 className="max-w-5xl font-display text-[clamp(3.5rem,9vw,7rem)] font-bold uppercase leading-[.78]">Lorenzo<br/><span className="text-transparent [-webkit-text-stroke:1px_var(--paper)]">Blaconà</span></h1><p className="mt-6 font-display text-base uppercase md:text-xl">Attore • Cantante • Scrittore • Grafico</p><ArrowDownRight className="mt-6 h-10 w-10 text-hot" /></div>
+        {/* Come nel riferimento del cliente: un anello FITTO di elementi colorati PIENI (non trasparenti)
+            stretto intorno al blocco del nome — 5 icone a tema (un mestiere ciascuna) + quadrati/cerchi
+            a tinta unita nei colori della palette (i quadrati/cerchi stessi sono coerenti col profilo di
+            Lorenzo "grafico"). Grandi e ben visibili, non minuscoli. Nascosto su mobile. */}
+        <FloatingMic className="slow-drift pointer-events-none absolute left-[0%] top-[34%] hidden h-16 w-12 -rotate-6 text-hot/70 md:block" />
+        <FloatingClapper className="slow-drift pointer-events-none absolute left-[40%] top-[36%] hidden h-14 w-18 rotate-6 text-paper/60 md:block" style={{ animationDelay: "-2.5s" }} />
+        <FloatingMasks className="slow-drift pointer-events-none absolute left-[36%] top-[72%] hidden h-12 w-16 -rotate-3 text-hot/60 md:block" style={{ animationDelay: "-5s" }} />
+        <FloatingNote className="slow-drift pointer-events-none absolute -left-[2%] top-[66%] hidden h-14 w-10 rotate-6 text-paper/60 md:block" style={{ animationDelay: "-1.5s" }} />
+        <FloatingPen className="pointer-events-none absolute left-[14%] top-[88%] hidden h-11 w-11 -rotate-12 text-hot/65 md:block" />
+        <div className="pointer-events-none absolute left-[11%] top-[26%] hidden h-7 w-7 rotate-12 bg-hot md:block" />
+        <div className="slow-drift pointer-events-none absolute left-[28%] top-[20%] hidden h-6 w-6 rounded-full bg-signal md:block" style={{ animationDelay: "-4s" }} />
+        <div className="pointer-events-none absolute left-[50%] top-[26%] hidden h-5 w-5 rounded-full bg-paper md:block" />
+        <div className="pointer-events-none absolute left-[58%] top-[46%] hidden h-8 w-8 -rotate-6 bg-paper/90 md:block" />
+        <div className="slow-drift pointer-events-none absolute left-[2%] top-[48%] hidden h-5 w-5 rounded-full bg-hot md:block" style={{ animationDelay: "-3s" }} />
+        <div className="pointer-events-none absolute left-[7%] top-[82%] hidden h-7 w-7 rotate-45 bg-signal md:block" />
+        <div className="pointer-events-none absolute left-[24%] top-[93%] hidden h-4 w-4 rounded-full bg-paper/80 md:block" />
+        <div className="slow-drift pointer-events-none absolute left-[46%] top-[84%] hidden h-6 w-6 rotate-12 bg-hot/85 md:block" style={{ animationDelay: "-6s" }} />
+        <div className="pointer-events-none absolute left-[56%] top-[62%] hidden h-4 w-4 rounded-full bg-signal md:block" />
+        <div className="pointer-events-none absolute left-[20%] top-[42%] hidden h-5 w-5 rotate-[20deg] bg-paper/80 md:block" />
+        <div className="relative z-10 md:pb-10"><div className="mb-6 font-display text-sm uppercase text-hot">Portfolio / 2026</div><h1 className="max-w-5xl font-display text-[clamp(3.5rem,9vw,7rem)] font-bold uppercase leading-[.78]">Lorenzo<br/><span className="text-transparent [-webkit-text-stroke:1px_var(--paper)]">Blaconà</span></h1><p className="mt-6 font-display text-base uppercase md:text-xl">Attore • Cantante • Scrittore • Grafico<br/><span className="text-sm normal-case italic text-muted-foreground md:text-base">...e un gran sognatore</span></p><ArrowDownRight className="mt-6 h-10 w-10 text-hot" /></div>
         <div className="relative hidden h-[75vh] md:block"><div className="absolute inset-10 right-20 overflow-hidden rotate-2 border-2 border-hot bg-muted"><img src="/media/editoriale-scivolo-dallalto-02.jpg" alt="Lorenzo Blaconà" className="h-full w-full object-cover" /></div></div>
       </section>
 
-      <section id="bio" className="relative z-10 min-h-screen overflow-hidden bg-paper px-5 py-14 text-ink md:px-12 md:py-16 lg:px-20"><FloatingMic className="slow-drift pointer-events-none absolute right-16 top-16 hidden h-24 w-16 text-ink/10 lg:block" /><FloatingSquiggle solidColor="var(--ink)" dashColor="var(--hot)" variant="diagonal" className="pointer-events-none absolute inset-x-0 bottom-12 hidden h-48 w-full lg:block" style={{ opacity: 0.65 }} /><div className="grid max-w-6xl gap-10 md:grid-cols-[.8fr_1.2fr]"><PhotoFrame label="Ritratto" src="/media/ritratto-studio-giacca-occhiali.jpg" tall/><div className="md:pt-14"><p className="font-display text-sm uppercase text-hot">02 / Bio</p><h2 className="mt-3 font-display text-5xl font-bold uppercase leading-none md:text-7xl">Tra palco<br/>e immagine.</h2><p className="mt-6 max-w-xl text-lg leading-relaxed">Lorenzo Blaconà attraversa linguaggi e discipline con uno sguardo personale: recitazione, voce, scrittura e progetto grafico diventano parti della stessa ricerca artistica. Una biografia in movimento, costruita tra scena, ascolto e immaginazione.</p><Button onClick={() => setModal("cv")} className="mt-6 rounded-none bg-ink px-7 py-6 text-paper hover:bg-hot">Vedi di più CV <ArrowUpRight/></Button></div></div></section>
+      <section id="bio" className="relative z-10 min-h-screen overflow-hidden bg-paper px-5 py-14 text-ink md:px-12 md:py-16 lg:px-20"><FloatingMic className="slow-drift pointer-events-none absolute right-16 top-16 hidden h-24 w-16 text-ink/10 lg:block" /><FloatingSquiggle solidColor="var(--ink)" dashColor="var(--hot)" className="pointer-events-none absolute inset-0 hidden h-full w-full lg:block" style={{ opacity: 0.5 }} /><div className="grid max-w-6xl gap-10 md:grid-cols-[.8fr_1.2fr]"><PhotoFrame label="Ritratto" src="/media/ritratto-studio-giacca-occhiali.jpg" tall/><div className="md:pt-14"><p className="font-display text-sm uppercase text-hot">02 / Bio</p><h2 className="mt-3 font-display text-5xl font-bold uppercase leading-none md:text-7xl">Tra palco<br/>e immagine.</h2><p className="mt-6 max-w-xl text-lg leading-relaxed">Lorenzo Blaconà attraversa linguaggi e discipline con uno sguardo personale: recitazione, voce, scrittura e progetto grafico diventano parti della stessa ricerca artistica. Una biografia in movimento, costruita tra scena, ascolto e immaginazione.</p><a href="/cv-lorenzo-blacona.pdf" target="_blank" rel="noreferrer" className="mt-6 inline-flex items-center gap-2 rounded-none bg-ink px-7 py-6 font-display uppercase text-paper transition-colors hover:bg-hot">Vedi di più CV <ArrowUpRight/></a></div></div></section>
 
       <section id="lavori" className="relative z-10 min-h-screen overflow-hidden bg-ink px-5 py-14 md:px-12 md:py-16 lg:px-20">
         <FloatingClapper className="slow-drift pointer-events-none absolute right-16 top-20 hidden h-20 w-24 text-paper/10 lg:block" />
-        <FloatingSquiggle variant="diagonal" wild className="pointer-events-none absolute inset-x-0 top-24 hidden h-48 w-full lg:block" style={{ opacity: 0.65 }} />
+        <FloatingSquiggle wild className="pointer-events-none absolute inset-0 hidden h-full w-full lg:block" style={{ opacity: 0.5 }} />
         <p className="font-display text-sm uppercase text-hot">03 / Lavori</p>
         <h2 className="mt-3 max-w-4xl font-display text-5xl font-bold uppercase leading-none xl:text-7xl">Quello<br/>sono io!</h2>
         <p className="mt-4 max-w-xl text-lg text-muted-foreground">Clicca sui titoli, potrebbero portarti in posti magici... (come YouTube)</p>
@@ -168,10 +186,8 @@ function Index() {
           ))}
         </div>
         <div className="mt-8 flex flex-wrap gap-x-10 gap-y-4 border-t border-border pt-5">
-          {/* Link segnaposto ("#"): sostituire con gli URL veri di agenzia, sito filmmakers di riferimento e accademia. */}
-          <a href="#" className="inline-flex items-center gap-2 font-display text-lg text-hot">Agenzia <ArrowUpRight className="h-5 w-5" /></a>
-          <a href="#" className="inline-flex items-center gap-2 font-display text-lg text-hot">Filmmakers <ArrowUpRight className="h-5 w-5" /></a>
-          <a href="#" className="inline-flex items-center gap-2 font-display text-lg text-hot">Accademia <ArrowUpRight className="h-5 w-5" /></a>
+          <a href="https://wariboko.eu" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 font-display text-lg text-hot">Agenzia <ArrowUpRight className="h-5 w-5" /></a>
+          <a href="https://www.filmmakers.eu/it/actors/lorenzo-blacona" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 font-display text-lg text-hot">Filmmakers <ArrowUpRight className="h-5 w-5" /></a>
         </div>
       </section>
 
@@ -200,28 +216,28 @@ function Index() {
         <Link to="/galleria" className="mt-4 inline-flex items-center justify-center gap-2 rounded-none bg-ink px-6 py-3 font-display uppercase text-paper transition-colors hover:bg-hot">Vedi tutte le foto <ArrowUpRight /></Link>
       </section>
 
-      <section id="press" className="relative z-10 min-h-screen overflow-hidden bg-signal px-5 py-14 text-paper md:px-12 md:py-16 lg:px-20"><FloatingMasks className="slow-drift pointer-events-none absolute right-16 top-20 hidden h-16 w-24 text-paper/15 lg:block" /><FloatingSquiggle solidColor="var(--paper)" dashColor="var(--ink)" variant="vertical" className="pointer-events-none absolute inset-y-0 left-16 hidden h-screen w-48 lg:block" style={{ opacity: 0.65 }} /><p className="font-display text-sm uppercase">05 / Parlano di me</p><h2 className="mt-3 max-w-4xl font-display text-5xl font-bold uppercase leading-none xl:text-8xl">Rassegna<br/>stampa.</h2><div className="mt-8 grid gap-px bg-paper/30 md:grid-cols-3">{["Una presenza scenica magnetica","Nuove voci della scena italiana","Il segno incontra la parola"].map((t,i)=><article key={t} className="min-h-56 bg-signal p-7"><span className="text-xs uppercase">Articolo 0{i+1} / Placeholder</span><h3 className="mt-10 font-display text-3xl leading-tight">{t}</h3><p className="mt-4 text-paper/75">Testata, data e breve estratto saranno inseriti qui.</p></article>)}</div><Link to="/news" className="mt-6 inline-flex items-center gap-2 rounded-none bg-paper px-6 py-3 font-display uppercase text-ink transition-colors hover:bg-ink hover:text-paper">Vedi di più news <ArrowUpRight/></Link></section>
+      <section id="press" className="relative z-10 min-h-screen overflow-hidden bg-signal px-5 py-14 text-paper md:px-12 md:py-16 lg:px-20"><FloatingMasks className="slow-drift pointer-events-none absolute right-16 top-20 hidden h-16 w-24 text-paper/15 lg:block" /><FloatingSquiggle solidColor="var(--paper)" dashColor="var(--ink)" className="pointer-events-none absolute inset-0 hidden h-full w-full lg:block" style={{ opacity: 0.5 }} /><p className="font-display text-sm uppercase">05 / Parlano di me</p><h2 className="mt-3 max-w-4xl font-display text-5xl font-bold uppercase leading-none xl:text-8xl">Rassegna<br/>stampa.</h2><div className="mt-8 grid gap-px bg-paper/30 md:grid-cols-3">{[
+          { outlet: "L'Eco di Bergamo", date: "24 set 2026", title: "«Cosa desideri?» — A Cassano la musica incontra il teatro", href: "/media/press-cosa-desideri-eco-bergamo.pdf" },
+          { outlet: "Milano Etno TV", date: "11 set 2026", title: "Teatro Utile: laboratorio su clima e migrazioni in scena a Milano", href: "https://www.milanoetnotv.it/2026/09/11/teatro-utile-i-lavori-del-laboratorio-su-clima-e-migrazioni-in-scena-a-milano/" },
+          { outlet: "Slow Mill", date: "9 apr 2026", title: "Brasserie, di Koffi Kwahulé — regia di Tiziana Bergamaschi", href: "https://www.slowmill.it/evento/brasserie-spettacolo-teatrale-2/" },
+        ].map((a)=><a key={a.title} href={a.href} target="_blank" rel="noreferrer" className="group block min-h-56 bg-signal p-7 transition-colors hover:bg-ink"><span className="text-xs uppercase text-paper/70">{a.outlet} · {a.date}</span><h3 className="mt-10 font-display text-3xl leading-tight">{a.title}</h3><span className="mt-4 inline-flex items-center gap-2 text-paper/75 group-hover:text-paper">Leggi <ArrowUpRight className="h-4 w-4"/></span></a>)}</div><Link to="/news" className="mt-6 inline-flex items-center gap-2 rounded-none bg-paper px-6 py-3 font-display uppercase text-ink transition-colors hover:bg-ink hover:text-paper">Vedi di più news <ArrowUpRight/></Link></section>
 
       <footer id="contatti" className="relative z-10 min-h-screen overflow-hidden bg-ink px-5 py-14 md:px-12 md:py-16 lg:px-20">
-        <FloatingSquiggle solidColor="var(--hot)" dashColor="var(--paper)" variant="diagonal" wild className="pointer-events-none absolute inset-x-0 bottom-16 hidden h-48 w-full lg:block" style={{ opacity: 0.65 }} />
+        <FloatingSquiggle solidColor="var(--hot)" dashColor="var(--paper)" wild className="pointer-events-none absolute inset-0 hidden h-full w-full lg:block" style={{ opacity: 0.5 }} />
         {/* "Un inguaribile sognatore...": prima era la prima cosa che si leggeva in home, ora è un piccolo
             easter egg in fondo alla pagina — ci si imbatte per caso, non è più in vetrina. Posizionata
-            "absolute" apposta: non entra nel flusso normale, quindi non allunga la sezione oltre il 100vh. */}
-        <p className="pointer-events-none absolute bottom-24 right-6 hidden max-w-[10rem] -rotate-3 text-right font-display text-xs italic text-muted-foreground/50 md:block">“Un inguaribile sognatore...”</p>
+            "absolute" apposta: non entra nel flusso normale, quindi non allunga la sezione oltre il 100vh.
+            A sinistra (non più a destra): il rullino scende lungo il lato destro della pagina e la copriva. */}
+        <p className="pointer-events-none absolute bottom-24 left-6 hidden max-w-[10rem] -rotate-3 font-display text-xs italic text-muted-foreground/50 md:block">“Un inguaribile sognatore...”</p>
         <p className="font-display text-sm uppercase text-hot">06 / Contatti</p>
         <h2 className="mt-3 max-w-5xl font-display text-[clamp(3.5rem,9vw,7rem)] font-bold uppercase leading-[.82]">Facciamo<br/><span className="text-hot">qualcosa.</span></h2>
         <p className="mt-6 max-w-xl text-lg text-muted-foreground">Per proposte di lavoro, collaborazioni artistiche o richieste stampa: scrivimi direttamente, oppure passa dal booking.</p>
         <div className="mt-6 flex flex-wrap gap-4">
-          {/* wa.me usa lo stesso numero segnaposto del resto della pagina (+39 000 000 0000) — aggiornalo
-              qui insieme agli altri link "tel:" quando avrai il numero WhatsApp vero. */}
-          <a href="https://wa.me/390000000000" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-none bg-hot px-7 py-4 font-display uppercase text-ink transition-colors hover:bg-paper">Scrivimi <ArrowUpRight/></a>
-          <a href="tel:+390000000000" className="inline-flex items-center gap-2 rounded-none border border-paper/30 px-7 py-4 font-display uppercase text-paper transition-colors hover:border-hot hover:text-hot">Chiamami <Phone className="h-4 w-4"/></a>
+          <a href="mailto:loryblacona@gmail.com" className="inline-flex items-center gap-2 rounded-none bg-hot px-7 py-4 font-display uppercase text-ink transition-colors hover:bg-paper">Scrivimi <ArrowUpRight/></a>
         </div>
-        <div className="mt-10 grid gap-8 border-t border-border pt-6 md:grid-cols-3"><div><span className="text-xs uppercase text-muted-foreground">Booking</span><a href="mailto:booking@lorenzoblacona.it" className="mt-3 flex items-center gap-2 text-lg"> <Mail className="h-5 w-5 text-hot"/> booking@lorenzoblacona.it</a></div><div><span className="text-xs uppercase text-muted-foreground">Telefono</span><a href="tel:+390000000000" className="mt-3 flex items-center gap-2 text-lg"><Phone className="h-5 w-5 text-hot"/> +39 000 000 0000</a></div><div><span className="text-xs uppercase text-muted-foreground">Social</span><a href="https://instagram.com" target="_blank" rel="noreferrer" className="mt-3 flex items-center gap-2 text-lg"><Instagram className="h-5 w-5 text-hot"/> Instagram</a></div></div>
+        <div className="mt-10 grid gap-8 border-t border-border pt-6 md:grid-cols-3"><div><span className="text-xs uppercase text-muted-foreground">Email</span><a href="mailto:loryblacona@gmail.com" className="mt-3 flex items-center gap-2 text-lg"> <Mail className="h-5 w-5 text-hot"/> loryblacona@gmail.com</a></div><div><span className="text-xs uppercase text-muted-foreground">Agenzia · Wariboko</span><a href="mailto:Charity.dago@wariboko.eu" className="mt-3 flex items-center gap-2 text-lg"><Mail className="h-5 w-5 text-hot"/> Charity.dago@wariboko.eu</a></div><div><span className="text-xs uppercase text-muted-foreground">Social</span><a href="https://instagram.com/dets.lore" target="_blank" rel="noreferrer" className="mt-3 flex items-center gap-2 text-lg"><Instagram className="h-5 w-5 text-hot"/> @dets.lore</a></div></div>
         <p className="mt-14 text-xs uppercase text-muted-foreground">© 2026 Lorenzo Blaconà — Tutti i diritti riservati</p>
       </footer>
-
-      <AnimatePresence>{modal === "cv" && <Modal title="Curriculum" close={() => setModal(null)}><p className="text-lg text-muted-foreground">Il curriculum completo in PDF sarà disponibile qui. Nel frattempo, puoi richiederlo direttamente via email.</p><a href="mailto:booking@lorenzoblacona.it?subject=Richiesta%20CV" className="mt-8 inline-flex items-center gap-2 text-hot">Richiedi il CV <ArrowUpRight/></a></Modal>}</AnimatePresence>
     </main>
   );
 }

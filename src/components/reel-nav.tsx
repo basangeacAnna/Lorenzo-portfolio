@@ -1,5 +1,5 @@
 import { useNavigate } from "@tanstack/react-router";
-import { animate, motion, useMotionValue, useScroll, useTransform, type MotionValue } from "framer-motion";
+import { animate, motion, useMotionValue, useScroll, useSpring, useTransform, type MotionValue } from "framer-motion";
 import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -158,43 +158,50 @@ const FILM_HOLE_INSET = ((FILM_WIDTH - FILM_FRAME_WIDTH) / 2 - FILM_HOLE) / 2; /
 
 function FilmStrip() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollY } = useScroll();
+  // scrollYProgress (SENZA target) = frazione di TUTTA la pagina scrollata, da 0 (cima) a 1 (fondo
+  // assoluto): a differenza del pixel di scroll grezzo, è già indipendente da quanto è lunga la pagina —
+  // stesso comportamento identico su telefono (pagina lunghissima) e desktop (pagina più corta).
+  const { scrollYProgress } = useScroll();
   // Il <nav> (e quindi questa striscia) è "fixed": qualunque cosa oltre il bordo inferiore dello SCHERMO
-  // è semplicemente invisibile, non importa quanto la si faccia "alta" — non esiste modo di farla arrivare
-  // al fondo del DOCUMENTO restando agganciata alla bobina fissa. Quindi qui puntiamo al fondo dello
-  // SCHERMO (viewportCap), che è il vero "fino in fondo alla pagina" raggiungibile da un elemento fixed.
-  // contattiDocTop = posizione (nel documento) del bordo alto di "Contatti": usata per calcolare, ad ogni
-  // istante di scroll, dove si trova QUELLA sezione sullo schermo in questo preciso momento — il terzo
-  // limite (contattiLiveCap) tiene l'altezza sempre entro quel bordo, per costruzione, così la pellicola
-  // non lo supera mai (si "appoggia sopra" invece di disegnarsi sopra il testo dei contatti).
-  const geometry = useRef({ stripTop: 0, contattiDocTop: Infinity });
+  // è semplicemente invisibile — non esiste modo di farla "arrivare" oltre un'altezza-schermo restando
+  // agganciata alla bobina fissa. viewportCap = quanto può arrivare in basso al massimo (il bordo dello
+  // schermo), misurato una volta (e ad ogni resize) dalla posizione fissa della striscia sullo schermo.
+  const geometry = useRef({ viewportCap: 0 });
 
   useEffect(() => {
     function measure() {
       const stripTop = containerRef.current?.getBoundingClientRect().top ?? 0;
-      const contatti = document.getElementById("contatti");
-      const contattiDocTop = contatti ? contatti.getBoundingClientRect().top + window.scrollY : Infinity;
-      geometry.current = { stripTop, contattiDocTop };
+      geometry.current = { viewportCap: Math.max(0, window.innerHeight - stripTop) };
     }
     measure();
     window.addEventListener("resize", measure);
     return () => window.removeEventListener("resize", measure);
   }, []);
 
-  const rawHeight = useTransform(scrollY, (y) => {
+  // PROGRESS_TARGET = la frazione di pagina a cui inizia l'ULTIMA sezione (Contatti, sempre l'ultima
+  // dell'elenco "sections"): la striscia cresce in modo lineare e lentissimo da 0 a quel punto, quindi
+  // "finisce di srotolarsi" (raggiunge la sua altezza massima) proprio quando si arriva in fondo alla
+  // pagina — non prima, né su telefono né su desktop, perché è una FRAZIONE della pagina intera, non un
+  // numero di pixel fisso. Dopo quel punto resta ferma lì (nessun rimbalzo, nessun ricalcolo "live" che
+  // prima causava gli scatti imprevedibili confrontando due limiti diversi ad ogni frame).
+  const PROGRESS_TARGET = (sections.length - 1) / sections.length;
+  const rawHeight = useTransform(scrollYProgress, (p) => {
     // typeof window: in SSR (TanStack Start) questa funzione viene comunque valutata una volta lato
     // server, dove "window" non esiste — senza guardia l'intera pagina cadeva in client-side rendering.
     if (typeof window === "undefined") return 0;
-    const { stripTop, contattiDocTop } = geometry.current;
-    const viewportCap = Math.max(0, window.innerHeight - stripTop);
-    const contattiLiveCap = Math.max(0, contattiDocTop - y - stripTop);
-    return Math.max(0, Math.min(y, viewportCap, contattiLiveCap));
+    const eased = Math.min(p / PROGRESS_TARGET, 1);
+    return eased * geometry.current.viewportCap;
   });
-  // Leggero ondeggiamento organico (due frequenze non multiple tra loro, quindi il moto non si ripete mai
-  // in modo identico): sembra un filo srotolato a mano, storto quel poco che basta, non una riga perfetta.
-  const swayX = useTransform(rawHeight, (h) => 7 * Math.sin(h / 90) + 3 * Math.sin(h / 33 + 1.4));
-  const swayRotate = useTransform(rawHeight, (h) => 1.4 * Math.sin(h / 150 + 0.6));
-  const heightPx = useTransform(rawHeight, (h) => `${h}px`);
+  // useSpring aggiunge inerzia nel TEMPO sopra al valore già lineare/lento: qualunque micro-salto dello
+  // scroll (rotella del mouse a scatti, non continua come un dito sul touch) arriva smussato, mai un
+  // balzo istantaneo — più lenta e pesante della prima versione, per un moto davvero fluido.
+  const smoothHeight = useSpring(rawHeight, { stiffness: 35, damping: 20, mass: 1 });
+  const heightPx = useTransform(smoothHeight, (h) => `${h}px`);
+  // Una SOLA curva morbida (non due sovrapposte a frequenze diverse, che la faceva sembrare un serpente
+  // impazzito): x e rotazione condividono lo stesso periodo lento, quindi si muovono insieme in modo
+  // coerente — l'effetto è un filo che pende con una curva sola, non che si agita a scatti.
+  const swayX = useTransform(smoothHeight, (h) => 9 * Math.sin(h / 260));
+  const swayRotate = useTransform(smoothHeight, (h) => 2 * Math.sin(h / 260 + 0.5));
 
   return (
     <motion.div
