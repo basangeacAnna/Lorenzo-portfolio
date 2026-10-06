@@ -5,9 +5,10 @@ import { ReelNav, sections, ids } from "@/components/reel-nav";
 import { Lightbox } from "@/components/lightbox";
 
 // Foto "teaser" accanto al video in Galleria: due scatti pensati per dare una prima impressione forte a
-// chi apre il sito (non più due foto qualsiasi) — un momento di scena dal vivo + uno scatto editoriale,
-// nessuno dei due già usato altrove in home.
-const teaserPhotos: [string, string] = ["/media/teatro-applausi-finali-02.jpg", "/media/editoriale-altalena-ritratto-01.jpg"];
+// chi apre il sito (non più due foto qualsiasi) — un momento di scena dal vivo + un primo piano normale
+// (prima c'era uno scatto editoriale su un'altalena, inquadrato in un modo che non si capiva cosa fosse:
+// tolto). Nessuno dei due già usato altrove in home.
+const teaserPhotos: [string, string] = ["/media/teatro-applausi-finali-02.jpg", "/media/teatro-monologo-mezza-figura-02.jpg"];
 
 // Lavori in evidenza: titoli, link YouTube e miniature reali forniti dal cliente.
 const works = [

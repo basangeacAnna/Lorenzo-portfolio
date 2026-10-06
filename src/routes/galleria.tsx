@@ -36,14 +36,19 @@ const eventi = [
   },
 ];
 
-// Galleria personale: un set più ampio e vario (studio, editoriale, red carpet, backstage) pensato per
-// chi non conosce ancora Lorenzo — non solo "foto a sfondo neutro". Collage stile polaroid: dimensioni,
-// rotazioni e sfalsamenti diversi per ogni scatto invece della griglia ordinata usata sopra.
+// Galleria personale: un set più ampio e vario (studio, editoriale, red carpet, primi piani, mezzi busti)
+// pensato per chi non conosce ancora Lorenzo — soprattutto per chi valuta di lavorarci come attore, quindi
+// deve vedergli bene il viso ed espressioni diverse, non solo foto a figura intera o a sfondo neutro.
+// Collage stile polaroid: dimensioni, rotazioni e sfalsamenti diversi per ogni scatto invece della griglia
+// ordinata usata sopra.
 const personali = [
   { label: "Ritratto studio", src: "/media/ritratto-studio-giacca-occhiali.jpg" },
+  { label: "Primo piano", src: "/media/teatro-monologo-primo-piano-01.jpg" },
   { label: "Red carpet", src: "/media/red-carpet-milano-film-fest.jpg" },
   { label: "Editoriale", src: "/media/editoriale-primo-piano-muro-03.jpg" },
   { label: "Catalogo", src: "/media/catalogo-casual-camicia-quadri.jpg" },
+  { label: "Editoriale notturno", src: "/media/editoriale-luce-blu-notturno.jpg" },
+  { label: "Primo piano", src: "/media/cortometraggio-primo-piano-buio.jpg" },
   { label: "Editoriale", src: "/media/editoriale-profilo-citta-04.jpg" },
 ];
 
