@@ -177,22 +177,23 @@ function Index() {
         {/* Come nel riferimento del cliente: un anello FITTO di elementi colorati PIENI (non trasparenti)
             stretto intorno al blocco del nome — 5 icone a tema (un mestiere ciascuna) + quadrati/cerchi
             a tinta unita nei colori della palette (i quadrati/cerchi stessi sono coerenti col profilo di
-            Lorenzo "grafico"). Grandi e ben visibili, non minuscoli. Nascosto su mobile. */}
-        <FloatingMic className="slow-drift pointer-events-none absolute left-[0%] top-[34%] hidden h-16 w-12 -rotate-6 text-hot/70 md:block" />
-        <FloatingClapper className="slow-drift pointer-events-none absolute left-[40%] top-[36%] hidden h-14 w-18 rotate-6 text-paper/60 md:block" style={{ animationDelay: "-2.5s" }} />
-        <Drama strokeWidth={1.5} className="slow-drift pointer-events-none absolute left-[36%] top-[72%] hidden h-12 w-12 -rotate-3 text-hot/60 md:block" style={{ animationDelay: "-5s" }} />
-        <FloatingNote className="slow-drift pointer-events-none absolute -left-[2%] top-[66%] hidden h-14 w-10 rotate-6 text-paper/60 md:block" style={{ animationDelay: "-1.5s" }} />
-        <FloatingPen className="pointer-events-none absolute left-[14%] top-[88%] hidden h-11 w-11 -rotate-12 text-hot/65 md:block" />
-        <div className="pointer-events-none absolute left-[11%] top-[26%] hidden h-7 w-7 rotate-12 bg-hot md:block" />
-        <div className="slow-drift pointer-events-none absolute left-[28%] top-[20%] hidden h-6 w-6 rounded-full bg-signal md:block" style={{ animationDelay: "-4s" }} />
-        <div className="pointer-events-none absolute left-[50%] top-[26%] hidden h-5 w-5 rounded-full bg-paper md:block" />
-        <div className="pointer-events-none absolute left-[58%] top-[46%] hidden h-8 w-8 -rotate-6 bg-paper/90 md:block" />
-        <div className="slow-drift pointer-events-none absolute left-[2%] top-[48%] hidden h-5 w-5 rounded-full bg-hot md:block" style={{ animationDelay: "-3s" }} />
-        <div className="pointer-events-none absolute left-[7%] top-[82%] hidden h-7 w-7 rotate-45 bg-signal md:block" />
-        <div className="pointer-events-none absolute left-[24%] top-[93%] hidden h-4 w-4 rounded-full bg-paper/80 md:block" />
-        <div className="slow-drift pointer-events-none absolute left-[46%] top-[84%] hidden h-6 w-6 rotate-12 bg-hot/85 md:block" style={{ animationDelay: "-6s" }} />
-        <div className="pointer-events-none absolute left-[56%] top-[62%] hidden h-4 w-4 rounded-full bg-signal md:block" />
-        <div className="pointer-events-none absolute left-[20%] top-[42%] hidden h-5 w-5 rotate-[20deg] bg-paper/80 md:block" />
+            Lorenzo "grafico"). Visibili anche su telefono (prima erano "hidden md:block": sparivano del
+            tutto sotto i 768px) — solo più piccole, per non affollare uno schermo stretto quanto uno largo. */}
+        <FloatingMic className="slow-drift pointer-events-none absolute left-[0%] top-[34%] h-10 w-8 -rotate-6 text-hot/70 md:h-16 md:w-12" />
+        <FloatingClapper className="slow-drift pointer-events-none absolute left-[40%] top-[36%] h-9 w-11 rotate-6 text-paper/60 md:h-14 md:w-18" style={{ animationDelay: "-2.5s" }} />
+        <Drama strokeWidth={1.5} className="slow-drift pointer-events-none absolute left-[36%] top-[72%] h-8 w-8 -rotate-3 text-hot/60 md:h-12 md:w-12" style={{ animationDelay: "-5s" }} />
+        <FloatingNote className="slow-drift pointer-events-none absolute -left-[2%] top-[66%] h-9 w-7 rotate-6 text-paper/60 md:h-14 md:w-10" style={{ animationDelay: "-1.5s" }} />
+        <FloatingPen className="pointer-events-none absolute left-[14%] top-[88%] h-7 w-7 -rotate-12 text-hot/65 md:h-11 md:w-11" />
+        <div className="pointer-events-none absolute left-[11%] top-[26%] h-5 w-5 rotate-12 bg-hot md:h-7 md:w-7" />
+        <div className="slow-drift pointer-events-none absolute left-[28%] top-[20%] h-4 w-4 rounded-full bg-signal md:h-6 md:w-6" style={{ animationDelay: "-4s" }} />
+        <div className="pointer-events-none absolute left-[50%] top-[26%] h-3 w-3 rounded-full bg-paper md:h-5 md:w-5" />
+        <div className="pointer-events-none absolute left-[58%] top-[46%] h-5 w-5 -rotate-6 bg-paper/90 md:h-8 md:w-8" />
+        <div className="slow-drift pointer-events-none absolute left-[2%] top-[48%] h-3 w-3 rounded-full bg-hot md:h-5 md:w-5" style={{ animationDelay: "-3s" }} />
+        <div className="pointer-events-none absolute left-[7%] top-[82%] h-5 w-5 rotate-45 bg-signal md:h-7 md:w-7" />
+        <div className="pointer-events-none absolute left-[24%] top-[93%] h-3 w-3 rounded-full bg-paper/80 md:h-4 md:w-4" />
+        <div className="slow-drift pointer-events-none absolute left-[46%] top-[84%] h-4 w-4 rotate-12 bg-hot/85 md:h-6 md:w-6" style={{ animationDelay: "-6s" }} />
+        <div className="pointer-events-none absolute left-[56%] top-[62%] h-3 w-3 rounded-full bg-signal md:h-4 md:w-4" />
+        <div className="pointer-events-none absolute left-[20%] top-[42%] h-3 w-3 rotate-[20deg] bg-paper/80 md:h-5 md:w-5" />
         <div className="relative z-10 md:pb-10"><div className="mb-6 font-display text-sm uppercase text-hot">Portfolio / 2026</div><h1 className="max-w-5xl font-display text-[clamp(3.5rem,9vw,7rem)] font-bold uppercase leading-[.78]">Lorenzo<br/><span className="text-transparent [-webkit-text-stroke:1px_var(--paper)]">Blaconà</span></h1><p className="mt-6 font-display text-base uppercase md:text-xl">Attore • Cantante • Scrittore • Grafico<br/><span className="text-sm normal-case italic text-muted-foreground md:text-base">...e un gran sognatore</span></p><ArrowDownRight className="mt-6 h-10 w-10 text-hot" /></div>
         <div className="relative hidden h-[75vh] md:block"><div className="absolute inset-10 right-20 overflow-hidden rotate-2 border-2 border-hot bg-muted"><img src="/media/editoriale-scivolo-dallalto-02.jpg" alt="Lorenzo Blaconà" className="h-full w-full object-cover" /></div></div>
       </section>
@@ -204,7 +205,9 @@ function Index() {
         <FloatingSquiggle wild className="pointer-events-none absolute inset-0 hidden h-full w-full lg:block" style={{ opacity: 0.5 }} />
         <p className="font-display text-sm uppercase text-hot">03 / Lavori</p>
         <h2 className="mt-3 max-w-4xl font-display text-5xl font-bold uppercase leading-none xl:text-7xl">Quello<br/>sono io!</h2>
-        <p className="mt-4 max-w-xl text-lg text-muted-foreground">Clicca sui titoli, potrebbero portarti in posti magici... (come YouTube)</p>
+        {/* max-w-[19rem] solo su telefono: la pellicola ("rullino") che scende dalla bobina arriva fin lì
+            — oltre, anche solo per l'ultima parola di riga, finiva coperta. Da sm in su torna max-w-xl. */}
+        <p className="mt-4 max-w-[19rem] text-lg text-muted-foreground sm:max-w-xl">Clicca sui titoli, potrebbero portarti in posti magici... (come YouTube)</p>
         <div className="mt-8 grid gap-x-6 gap-y-6 sm:grid-cols-2 xl:grid-cols-4">
           {works.map((w) => (
             <a key={w.title} href={w.href} target="_blank" rel="noreferrer" className="group block">

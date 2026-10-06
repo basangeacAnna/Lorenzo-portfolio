@@ -3,6 +3,7 @@ import { ArrowLeft, Maximize2 } from "lucide-react";
 import { useState } from "react";
 import { ReelNav, ids } from "@/components/reel-nav";
 import { Lightbox } from "@/components/lightbox";
+import { SiteFooter } from "@/components/site-footer";
 
 export const Route = createFileRoute("/galleria")({
   head: () => ({ meta: [
@@ -43,7 +44,6 @@ const personali = [
   { label: "Red carpet", src: "/media/red-carpet-milano-film-fest.jpg" },
   { label: "Editoriale", src: "/media/editoriale-primo-piano-muro-03.jpg" },
   { label: "Catalogo", src: "/media/catalogo-casual-camicia-quadri.jpg" },
-  { label: "Backstage", src: "/media/backstage-set-risate.jpg" },
   { label: "Editoriale", src: "/media/editoriale-profilo-citta-04.jpg" },
 ];
 
@@ -125,6 +125,8 @@ function GalleriaPage() {
       {lightboxIndex !== null && (
         <Lightbox photos={allPhotos} index={lightboxIndex} onClose={() => setLightboxIndex(null)} onNavigate={setLightboxIndex} />
       )}
+
+      <SiteFooter theme="light" />
     </main>
   );
 }

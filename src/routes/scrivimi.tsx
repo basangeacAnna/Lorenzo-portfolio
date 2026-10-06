@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, ArrowUpRight, Send } from "lucide-react";
 import { useState } from "react";
 import { ReelNav, ids } from "@/components/reel-nav";
+import { SiteFooter } from "@/components/site-footer";
 
 export const Route = createFileRoute("/scrivimi")({
   head: () => ({ meta: [
@@ -123,6 +124,8 @@ function ScrivimiPage() {
       <a href="mailto:loryblacona@gmail.com" className="mt-10 inline-flex items-center gap-2 font-display text-sm uppercase text-paper/60 hover:text-hot">
         oppure scrivi direttamente a loryblacona@gmail.com <ArrowUpRight className="h-4 w-4" />
       </a>
+
+      <SiteFooter theme="dark" />
     </main>
   );
 }

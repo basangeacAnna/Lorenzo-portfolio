@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { useState } from "react";
 import { ReelNav, ids } from "@/components/reel-nav";
 import { Lightbox } from "@/components/lightbox";
+import { SiteFooter } from "@/components/site-footer";
 
 export const Route = createFileRoute("/news")({
   head: () => ({ meta: [
@@ -151,6 +152,8 @@ function NewsPage() {
       {scanLightbox && (
         <Lightbox photos={[scanLightbox]} index={0} onClose={() => setScanLightbox(null)} onNavigate={() => {}} />
       )}
+
+      <SiteFooter theme="dark" />
     </main>
   );
 }
