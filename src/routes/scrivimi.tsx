@@ -37,7 +37,11 @@ function ScrivimiPage() {
       <Link to="/" hash="contatti" className="inline-flex items-center gap-2 font-display text-sm uppercase text-hot">
         <ArrowLeft className="h-4 w-4" /> Torna al portfolio
       </Link>
-      <h1 className="mt-8 font-display text-6xl font-bold uppercase leading-none md:text-8xl">Scrivimi.</h1>
+      {/* Stesso trattamento di "Fotogrammi." in home: parola unica spezzata solo su telefono (dove
+          altrimenti finirebbe dietro la bobina in alto a destra), ricomposta su una riga da sm in su. */}
+      <h1 className="mt-8 font-display text-4xl font-bold uppercase leading-none sm:text-6xl md:text-8xl">
+        <span className="block sm:inline">Scrivi</span><span className="block sm:inline">mi.</span>
+      </h1>
       <p className="mt-5 max-w-xl text-lg text-paper/80">
         Compila il form: si apre già tutto pronto nella tua email, un click e parte.
       </p>

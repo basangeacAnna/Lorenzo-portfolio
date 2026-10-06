@@ -207,7 +207,14 @@ function Index() {
 
       <section id="galleria" className="relative z-10 min-h-screen bg-paper px-5 py-12 text-ink md:px-12 md:py-14 lg:px-20">
         <p className="font-display text-sm uppercase text-hot">04 / Galleria</p>
-        <h2 className="mt-3 break-words font-display text-5xl font-bold uppercase xl:text-7xl">Fotogrammi.</h2>
+        {/* "Fotogrammi." è una sola parola lunga, senza spazi su cui andare a capo naturalmente: su
+            telefono (dove la bobina occupa l'angolo in alto a destra) va spezzata per non finire dietro
+            al disco, esattamente come già fanno "Rassegna stampa." e "Facciamo qualcosa." — ma siccome qui
+            non c'è un secondo "parola" separata, lo spezzo a metà con due <span> che tornano una riga sola
+            da sm in su (sm:inline), quindi su tablet/desktop il risultato è IDENTICO a prima. */}
+        <h2 className="mt-3 font-display text-4xl font-bold uppercase sm:text-5xl xl:text-7xl">
+          <span className="block sm:inline">Foto</span><span className="block sm:inline">grammi.</span>
+        </h2>
         {/* Il pulsante "Vedi tutte le foto" prima stava qui accanto al titolo, in alto a destra — proprio dove
             finisce la bobina fissa, che lo copriva. Ora sta sotto la griglia, fuori da quella zona. */}
         <div className="mt-6 grid gap-4 md:grid-cols-3">
@@ -230,7 +237,7 @@ function Index() {
         <Link to="/galleria" className="mt-4 inline-flex items-center justify-center gap-2 rounded-none bg-ink px-6 py-3 font-display uppercase text-paper transition-colors hover:bg-hot">Vedi tutte le foto <ArrowUpRight /></Link>
       </section>
 
-      <section id="press" className="relative z-10 min-h-screen overflow-hidden bg-signal px-5 py-14 text-paper md:px-12 md:py-16 lg:px-20"><Drama strokeWidth={1.5} className="slow-drift pointer-events-none absolute right-16 top-20 hidden h-20 w-20 text-paper/15 lg:block" /><FloatingSquiggle solidColor="var(--paper)" dashColor="var(--ink)" className="pointer-events-none absolute inset-0 hidden h-full w-full lg:block" style={{ opacity: 0.5 }} /><p className="font-display text-sm uppercase">05 / Parlano di me</p><h2 className="mt-3 max-w-4xl font-display text-5xl font-bold uppercase leading-none xl:text-8xl">Rassegna<br/>stampa.</h2><div className="mt-8 grid gap-px bg-paper/30 md:grid-cols-3">{[
+      <section id="press" className="relative z-10 min-h-screen overflow-hidden bg-signal px-5 py-14 text-paper md:px-12 md:py-16 lg:px-20"><Drama strokeWidth={1.5} className="slow-drift pointer-events-none absolute right-16 top-20 hidden h-20 w-20 text-paper/15 lg:block" /><FloatingSquiggle solidColor="var(--paper)" dashColor="var(--ink)" className="pointer-events-none absolute inset-0 hidden h-full w-full lg:block" style={{ opacity: 0.5 }} /><p className="font-display text-sm uppercase">05 / Parlano di me</p><h2 className="mt-3 max-w-4xl font-display text-4xl font-bold uppercase leading-none sm:text-5xl xl:text-8xl">Rassegna<br/>stampa.</h2><div className="mt-8 grid gap-px bg-paper/30 md:grid-cols-3">{[
           { outlet: "L'Eco di Bergamo", date: "24 set 2026", title: "«Cosa desideri?» — A Cassano la musica incontra il teatro", href: "/media/press-cosa-desideri-eco-bergamo.pdf" },
           { outlet: "Milano Etno TV", date: "11 set 2026", title: "Teatro Utile: laboratorio su clima e migrazioni in scena a Milano", href: "https://www.milanoetnotv.it/2026/09/11/teatro-utile-i-lavori-del-laboratorio-su-clima-e-migrazioni-in-scena-a-milano/" },
           { outlet: "Slow Mill", date: "9 apr 2026", title: "Brasserie, di Koffi Kwahulé — regia di Tiziana Bergamaschi", href: "https://www.slowmill.it/evento/brasserie-spettacolo-teatrale-2/" },
@@ -239,7 +246,7 @@ function Index() {
       <footer id="contatti" className="relative z-10 min-h-screen overflow-hidden bg-ink px-5 py-14 md:px-12 md:py-16 lg:px-20">
         <FloatingSquiggle solidColor="var(--hot)" dashColor="var(--paper)" wild className="pointer-events-none absolute inset-0 hidden h-full w-full lg:block" style={{ opacity: 0.5 }} />
         <p className="font-display text-sm uppercase text-hot">06 / Contatti</p>
-        <h2 className="mt-3 max-w-5xl font-display text-[clamp(3.5rem,9vw,7rem)] font-bold uppercase leading-[.82]">Facciamo<br/><span className="text-hot">qualcosa.</span></h2>
+        <h2 className="mt-3 max-w-5xl font-display text-[clamp(2.25rem,9vw,7rem)] font-bold uppercase leading-[.82]">Facciamo<br/><span className="text-hot">qualcosa.</span></h2>
         <p className="mt-6 max-w-xl text-lg text-muted-foreground">Per proposte di lavoro, collaborazioni artistiche o richieste stampa: scrivimi!</p>
         <div className="mt-6 flex flex-wrap gap-4">
           <Link to="/scrivimi" className="inline-flex items-center gap-2 rounded-none bg-hot px-7 py-4 font-display uppercase text-ink transition-colors hover:bg-paper">Scrivimi <ArrowUpRight/></Link>
