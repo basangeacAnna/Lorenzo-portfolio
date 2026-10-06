@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMotionValueEvent, useScroll } from "framer-motion";
 import { ArrowDownRight, ArrowUpRight, Drama, Instagram, Mail, Maximize2, Play } from "lucide-react";
-import { useState, type CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { ReelNav, sections, ids } from "@/components/reel-nav";
 import { Lightbox } from "@/components/lightbox";
 
@@ -139,8 +138,29 @@ function Index() {
   const [active, setActive] = useState(0);
   const [bioLightbox, setBioLightbox] = useState(false);
   const [teaserLightbox, setTeaserLightbox] = useState<number | null>(null);
-  const { scrollYProgress } = useScroll();
-  useMotionValueEvent(scrollYProgress, "change", v => setActive(Math.min(sections.length - 1, Math.floor(v * sections.length))));
+  // Sezione "attiva" = quella che attraversa una fascia sottile vicino alla cima dello schermo (15%-30%
+  // dall'alto), rilevata con IntersectionObserver — non più una frazione lineare di scroll totale
+  // (scrollY / altezza pagina * numero sezioni), che sbagliava ogni volta che le sezioni avevano altezze
+  // diverse fra loro (quasi sempre: Galleria/Rassegna stampa hanno contenuto variabile). Quello sbaglio
+  // faceva sì che, cliccando un'etichetta della bobina (es. "Bio"), si atterrasse in cima alla sezione
+  // giusta ma la bobina continuasse a pensare di essere ancora sulla sezione precedente finché non si
+  // scrollava ancora un po' — rendendo scomodo cliccare subito la sezione SUCCESSIVA.
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            const idx = ids.indexOf(entry.target.id);
+            if (idx !== -1) setActive(idx);
+          }
+        }
+      },
+      { rootMargin: "-15% 0px -70% 0px", threshold: 0 }
+    );
+    const els = ids.map((id) => document.getElementById(id)).filter((el): el is HTMLElement => el !== null);
+    els.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <main className="relative bg-background text-foreground">
@@ -247,7 +267,9 @@ function Index() {
         <FloatingSquiggle solidColor="var(--hot)" dashColor="var(--paper)" wild className="pointer-events-none absolute inset-0 hidden h-full w-full lg:block" style={{ opacity: 0.5 }} />
         <p className="font-display text-sm uppercase text-hot">06 / Contatti</p>
         <h2 className="mt-3 max-w-5xl font-display text-[clamp(2.25rem,9vw,7rem)] font-bold uppercase leading-[.82]">Facciamo<br/><span className="text-hot">qualcosa.</span></h2>
-        <p className="mt-6 max-w-xl text-lg text-muted-foreground">Per proposte di lavoro, collaborazioni artistiche o richieste stampa: scrivimi!</p>
+        {/* max-w-[11rem] solo su telefono: a quella larghezza il testo non entra mai nella zona che la
+            bobina copre (stessa logica dei titoli già sistemati sopra) — da sm in su torna max-w-xl, invariato. */}
+        <p className="mt-6 max-w-[11rem] text-lg text-muted-foreground sm:max-w-xl">Per proposte di lavoro, collaborazioni artistiche o richieste stampa: scrivimi!</p>
         <div className="mt-6 flex flex-wrap gap-4">
           <Link to="/scrivimi" className="inline-flex items-center gap-2 rounded-none bg-hot px-7 py-4 font-display uppercase text-ink transition-colors hover:bg-paper">Scrivimi <ArrowUpRight/></Link>
         </div>

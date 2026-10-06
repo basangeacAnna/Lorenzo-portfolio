@@ -136,8 +136,8 @@ function NewsPage() {
   return (
     <main className="relative min-h-screen bg-ink px-5 pb-16 pt-28 text-paper sm:pt-16 md:px-12 lg:px-20">
       <ReelNav active={ids.indexOf("press")} />
-      <Link to="/" hash="press" className="inline-flex items-center gap-2 font-display text-sm uppercase">
-        <ArrowLeft className="h-4 w-4" /> Torna al portfolio
+      <Link to="/" hash="press" className="inline-flex items-center gap-2 font-display text-xs uppercase text-hot sm:text-sm">
+        <ArrowLeft className="h-4 w-4" /> <span className="sm:hidden">Portfolio</span><span className="hidden sm:inline">Torna al portfolio</span>
       </Link>
       <h1 className="mt-8 font-display text-6xl font-bold uppercase leading-none md:text-8xl">News & press.</h1>
       <p className="mt-4 max-w-xl text-lg text-paper/80">Interviste, recensioni e nuove pubblicazioni su Lorenzo Blaconà.</p>

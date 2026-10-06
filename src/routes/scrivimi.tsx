@@ -34,8 +34,10 @@ function ScrivimiPage() {
   return (
     <main className="relative min-h-screen bg-ink px-5 pb-20 pt-28 text-paper sm:pt-16 md:px-12 lg:px-20">
       <ReelNav active={ids.indexOf("contatti")} />
-      <Link to="/" hash="contatti" className="inline-flex items-center gap-2 font-display text-sm uppercase text-hot">
-        <ArrowLeft className="h-4 w-4" /> Torna al portfolio
+      {/* "Torna al portfolio" per esteso da sm in su; solo "Portfolio" su telefono (schermi molto stretti,
+          <360px, altrimenti finiva dietro alla bobina anche a font ridotto) — stesso link, stessa meta. */}
+      <Link to="/" hash="contatti" className="inline-flex items-center gap-2 font-display text-xs uppercase text-hot sm:text-sm">
+        <ArrowLeft className="h-4 w-4" /> <span className="sm:hidden">Portfolio</span><span className="hidden sm:inline">Torna al portfolio</span>
       </Link>
       {/* Stesso trattamento di "Fotogrammi." in home: parola unica spezzata solo su telefono (dove
           altrimenti finirebbe dietro la bobina in alto a destra), ricomposta su una riga da sm in su. */}

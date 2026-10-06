@@ -24,7 +24,7 @@ export function Lightbox({ photos, index, onClose, onNavigate }: {
 
   return (
     <div className="fixed inset-0 z-[200] grid place-items-center bg-ink/95 p-6" onClick={onClose}>
-      <button type="button" onClick={onClose} aria-label="Chiudi" className="absolute right-6 top-6 text-paper hover:text-hot">
+      <button type="button" onClick={onClose} aria-label="Chiudi" className="absolute right-4 top-4 p-2 text-paper hover:text-hot">
         <X className="h-8 w-8" />
       </button>
 
