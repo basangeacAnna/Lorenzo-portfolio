@@ -66,14 +66,18 @@ export function ReelNav({ active }: { active: number }) {
     return () => controls.stop();
   }, [active, wheelAngle]);
 
-  return <nav aria-label="Navigazione principale" className="fixed -right-31 -top-31 z-150 h-[32rem] w-[32rem] origin-top-right rounded-bl-[80%] scale-[0.75] sm:-right-34 sm:-top-34 sm:scale-[0.8] md:-right-36 md:-top-36 md:scale-[0.85] xl:-right-42 xl:-top-42 xl:scale-100">
+  return <nav aria-label="Navigazione principale" className="fixed -right-34 -top-34 z-150 h-[32rem] w-[32rem] origin-top-right rounded-bl-[80%] scale-[0.75] sm:-right-34 sm:-top-34 sm:scale-[0.8] md:-right-36 md:-top-36 md:scale-[0.85] xl:-right-42 xl:-top-42 xl:scale-100">
     {/* La STESSA identica bobina ad ogni larghezza di schermo (nessuna barra/stile diverso su mobile): cambia
         solo la scala, sempre "incastonata" nell'angolo in alto a destra — sbordando leggermente fuori dal
         bordo dello schermo esattamente come su desktop (non un cerchio pieno e fluttuante su telefono).
-        L'offset negativo (-right/-top) è proporzionale alla scala di ogni breakpoint, così la percentuale di
-        disco tagliata dal bordo resta la stessa a ogni larghezza. Cellulare piccolo → tablet → desktop:
-        0.75 → 0.8 (da 640px) → 0.85 (da 768px) → 1 (piena, da 1280px). Scala mobile volutamente alta:
-        sotto quella soglia le scritte (font fisso, scalato col resto) diventavano illeggibili. */}
+        L'offset negativo (-right/-top) è proporzionale alla scala di ogni breakpoint (stessa percentuale di
+        disco tagliata dal bordo ad ogni larghezza), TRANNE sulla fascia più piccola (<640px, telefoni): lì è
+        stato spinto più dentro l'angolo apposta (stesso offset della fascia "sm" invece di uno proporzionale
+        alla sua scala più piccola) perché copriva troppo testo — resta comunque cliccabile per le sezioni
+        successive a quella attiva, che è l'unica cosa che conta. NON toccare sm/md/xl: desktop e tablet erano
+        già confermati perfetti così. Cellulare piccolo → tablet → desktop: 0.75 → 0.8 (da 640px) → 0.85 (da
+        768px) → 1 (piena, da 1280px). Scala mobile volutamente alta: sotto quella soglia le scritte (font
+        fisso, scalato col resto) diventavano illeggibili. */}
     {/* Contenitore generale (l'angolo a quarto di cerchio in alto a destra): h-/w- = dimensione totale, rounded-bl-[%] = quanto è arrotondato l'angolo */}
 
     <FilmStrip />
