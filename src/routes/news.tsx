@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
+import { useState } from "react";
 import { ReelNav, ids } from "@/components/reel-nav";
+import { Lightbox } from "@/components/lightbox";
 
 export const Route = createFileRoute("/news")({
   head: () => ({ meta: [
@@ -12,7 +14,8 @@ export const Route = createFileRoute("/news")({
 
 // Rassegna stampa reale (titoli, testate e date verificati uno per uno sulla fonte originale prima di
 // essere inseriti qui — niente di inventato). Più recenti in alto. href assente per i due ritagli di
-// giornale (foto dello scan): articoli di carta stampata, nessuna pagina web a cui linkare.
+// giornale (foto dello scan): articoli di carta stampata, nessuna pagina web a cui linkare — si aprono
+// come foto a schermo intero invece (vedi Lightbox più sotto), stesso trattamento grafico degli altri.
 type NewsItem = { title: string; outlet: string; date: string; excerpt: string; href?: string; img?: string };
 const news: NewsItem[] = [
   {
@@ -101,9 +104,37 @@ const news: NewsItem[] = [
   },
 ];
 
+function NewsCard({ item, onOpenScan }: { item: NewsItem; onOpenScan: () => void }) {
+  // Stesso identico aspetto per tutte le card (uniforme, non più alternato nero/rosso — "sembrava un
+  // caos a scacchiera"): sfondo nero fisso, accento rosso solo nel bordo superiore e nel link "Leggi" —
+  // è quell'accento a "rompere" la monotonia, non il colore di sfondo che cambia da riquadro a riquadro.
+  // I ritagli di giornale (niente href, solo scan) si aprono come foto a schermo intero invece di un link
+  // esterno, ma con la stessa identica struttura/stile delle altre: nessun trattamento speciale.
+  const inner = (
+    <>
+      {item.img && <img src={item.img} alt={item.title} className="mb-5 h-40 w-full border border-paper/20 object-cover object-top" />}
+      <span className="text-xs uppercase text-hot">{item.outlet} · {item.date}</span>
+      <h3 className="mt-3 font-display text-2xl leading-tight">{item.title}</h3>
+      <p className="mt-4 text-sm text-paper/75">{item.excerpt}</p>
+      <span className="mt-auto inline-flex w-fit items-center gap-2 pt-5 font-display text-sm uppercase text-paper group-hover:text-hot">
+        {item.href ? "Leggi" : "Vedi la foto"} <ArrowUpRight className="h-4 w-4" />
+      </span>
+    </>
+  );
+
+  const className = "group flex min-h-80 flex-col border-t-4 border-hot bg-ink p-7 text-left transition-colors hover:bg-ink/80";
+
+  if (item.href) {
+    return <a href={item.href} target="_blank" rel="noreferrer" className={className}>{inner}</a>;
+  }
+  return <button type="button" onClick={onOpenScan} className={className}>{inner}</button>;
+}
+
 function NewsPage() {
+  const [scanLightbox, setScanLightbox] = useState<string | null>(null);
+
   return (
-    <main className="relative min-h-screen bg-signal px-5 pb-16 pt-28 text-paper sm:pt-16 md:px-12 lg:px-20">
+    <main className="relative min-h-screen bg-ink px-5 pb-16 pt-28 text-paper sm:pt-16 md:px-12 lg:px-20">
       <ReelNav active={ids.indexOf("press")} />
       <Link to="/" hash="press" className="inline-flex items-center gap-2 font-display text-sm uppercase">
         <ArrowLeft className="h-4 w-4" /> Torna al portfolio
@@ -111,21 +142,15 @@ function NewsPage() {
       <h1 className="mt-8 font-display text-6xl font-bold uppercase leading-none md:text-8xl">News & press.</h1>
       <p className="mt-4 max-w-xl text-lg text-paper/80">Interviste, recensioni e nuove pubblicazioni su Lorenzo Blaconà.</p>
 
-      <div className="mt-16 grid gap-px bg-paper/30 border-t border-paper/30 md:grid-cols-3">
+      <div className="mt-16 grid gap-px bg-paper/20 border-t border-paper/20 md:grid-cols-3">
         {news.map((n) => (
-          <article key={n.title} className="flex min-h-80 flex-col bg-signal p-7">
-            {n.img && <img src={n.img} alt={n.title} className="mb-5 h-40 w-full border border-paper/20 object-cover object-top" />}
-            <span className="text-xs uppercase text-paper/70">{n.outlet} · {n.date}</span>
-            <h3 className="mt-3 font-display text-2xl leading-tight">{n.title}</h3>
-            <p className="mt-4 text-sm text-paper/75">{n.excerpt}</p>
-            {n.href && (
-              <a href={n.href} target="_blank" rel="noreferrer" className="mt-auto inline-flex w-fit items-center gap-2 pt-5 font-display text-sm uppercase text-paper hover:text-ink">
-                Leggi <ArrowUpRight className="h-4 w-4" />
-              </a>
-            )}
-          </article>
+          <NewsCard key={n.title} item={n} onOpenScan={() => setScanLightbox(n.img ?? null)} />
         ))}
       </div>
+
+      {scanLightbox && (
+        <Lightbox photos={[scanLightbox]} index={0} onClose={() => setScanLightbox(null)} onNavigate={() => {}} />
+      )}
     </main>
   );
 }

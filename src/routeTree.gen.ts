@@ -10,12 +10,19 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CvRouteImport } from './routes/cv'
 import { Route as GalleriaRouteImport } from './routes/galleria'
 import { Route as NewsRouteImport } from './routes/news'
+import { Route as ScrivimiRouteImport } from './routes/scrivimi'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CvRoute = CvRouteImport.update({
+  id: '/cv',
+  path: '/cv',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GalleriaRoute = GalleriaRouteImport.update({
@@ -28,35 +35,48 @@ const NewsRoute = NewsRouteImport.update({
   path: '/news',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ScrivimiRoute = ScrivimiRouteImport.update({
+  id: '/scrivimi',
+  path: '/scrivimi',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/cv': typeof CvRoute
   '/galleria': typeof GalleriaRoute
   '/news': typeof NewsRoute
+  '/scrivimi': typeof ScrivimiRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/cv': typeof CvRoute
   '/galleria': typeof GalleriaRoute
   '/news': typeof NewsRoute
+  '/scrivimi': typeof ScrivimiRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/cv': typeof CvRoute
   '/galleria': typeof GalleriaRoute
   '/news': typeof NewsRoute
+  '/scrivimi': typeof ScrivimiRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/galleria' | '/news'
+  fullPaths: '/' | '/cv' | '/galleria' | '/news' | '/scrivimi'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/galleria' | '/news'
-  id: '__root__' | '/' | '/galleria' | '/news'
+  to: '/' | '/cv' | '/galleria' | '/news' | '/scrivimi'
+  id: '__root__' | '/' | '/cv' | '/galleria' | '/news' | '/scrivimi'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CvRoute: typeof CvRoute
   GalleriaRoute: typeof GalleriaRoute
   NewsRoute: typeof NewsRoute
+  ScrivimiRoute: typeof ScrivimiRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -66,6 +86,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cv': {
+      id: '/cv'
+      path: '/cv'
+      fullPath: '/cv'
+      preLoaderRoute: typeof CvRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/galleria': {
@@ -82,13 +109,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NewsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/scrivimi': {
+      id: '/scrivimi'
+      path: '/scrivimi'
+      fullPath: '/scrivimi'
+      preLoaderRoute: typeof ScrivimiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CvRoute: CvRoute,
   GalleriaRoute: GalleriaRoute,
   NewsRoute: NewsRoute,
+  ScrivimiRoute: ScrivimiRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
