@@ -5,10 +5,10 @@ import { ReelNav, sections, ids } from "@/components/reel-nav";
 import { Lightbox } from "@/components/lightbox";
 
 // Foto "teaser" accanto al video in Galleria: due scatti pensati per dare una prima impressione forte a
-// chi apre il sito (non più due foto qualsiasi) — un momento di scena dal vivo + un primo piano normale
-// (prima c'era uno scatto editoriale su un'altalena, inquadrato in un modo che non si capiva cosa fosse:
-// tolto). Nessuno dei due già usato altrove in home.
-const teaserPhotos: [string, string] = ["/media/teatro-applausi-finali-02.jpg", "/media/teatro-monologo-mezza-figura-02.jpg"];
+// chi apre il sito — un momento di scena dal vivo + un primo piano normale. La seconda era
+// "teatro-monologo-mezza-figura-02", ora esclusiva della categoria "Teatro Filodrammatici 2025" in
+// Galleria: sostituita qui con un'altra foto della stessa serie "buio" (non riservata al 2025).
+const teaserPhotos: [string, string] = ["/media/teatro-applausi-finali-02.jpg", "/media/teatro-monologo-buio-02.jpg"];
 
 // Lavori in evidenza: titoli, link YouTube e miniature reali forniti dal cliente.
 const works = [
@@ -195,16 +195,16 @@ function Index() {
         <div className="slow-drift pointer-events-none absolute left-[46%] top-[84%] h-4 w-4 rotate-12 bg-hot/85 md:h-6 md:w-6" style={{ animationDelay: "-6s" }} />
         <div className="pointer-events-none absolute left-[56%] top-[62%] h-3 w-3 rounded-full bg-signal md:h-4 md:w-4" />
         <div className="pointer-events-none absolute left-[20%] top-[42%] h-3 w-3 rotate-[20deg] bg-paper/80 md:h-5 md:w-5" />
-        <div className="relative z-10 md:pb-10"><div className="mb-6 font-display text-sm uppercase text-hot">Portfolio / 2026</div><h1 className="max-w-5xl font-display text-[clamp(3.5rem,9vw,7rem)] font-bold uppercase leading-[.78]">Lorenzo<br/><span className="text-transparent [-webkit-text-stroke:1px_var(--paper)]">Blaconà</span></h1><p className="mt-6 font-display text-base uppercase md:text-xl">Attore • Cantante • Scrittore • Grafico<br/><span className="text-sm normal-case italic text-muted-foreground md:text-base">...e un gran sognatore</span></p><ArrowDownRight className="mt-6 h-10 w-10 text-hot" /></div>
+        <div className="relative z-10 md:pb-10"><h1 className="max-w-5xl font-display text-[clamp(3.5rem,9vw,7rem)] font-bold uppercase leading-[.78]">Lorenzo<br/><span className="text-transparent [-webkit-text-stroke:1px_var(--paper)]">Blaconà</span></h1><p className="mt-6 font-display text-base uppercase md:text-xl">Attore • Cantante • Scrittore • Grafico<br/><span className="text-sm normal-case italic text-muted-foreground md:text-base">...e un gran sognatore</span></p><ArrowDownRight className="mt-6 h-10 w-10 text-hot" /></div>
         <div className="relative hidden h-[75vh] md:block"><div className="absolute inset-10 right-20 overflow-hidden rotate-2 border-2 border-hot bg-muted"><img src="/media/editoriale-scivolo-dallalto-02.jpg" alt="Lorenzo Blaconà" className="h-full w-full object-cover" /></div></div>
       </section>
 
-      <section id="bio" className="relative z-10 flex min-h-screen items-center overflow-hidden bg-paper px-5 py-14 text-ink md:px-12 md:py-16 lg:px-20"><FloatingMic className="slow-drift pointer-events-none absolute right-16 top-16 hidden h-24 w-16 text-ink/10 lg:block" /><FloatingSquiggle solidColor="var(--ink)" dashColor="var(--hot)" className="pointer-events-none absolute inset-0 hidden h-full w-full lg:block" style={{ opacity: 0.5 }} /><div className="grid w-full max-w-6xl gap-10 md:grid-cols-[.8fr_1.2fr]"><PhotoFrame label="Ritratto" src="/media/ritratto-studio-giacca-occhiali.jpg" tall onOpen={() => setBioLightbox(true)} /><div className="md:pt-14"><p className="font-display text-sm uppercase text-hot">02 / Bio</p><h2 className="mt-3 font-display text-5xl font-bold uppercase leading-none md:text-7xl">Tra palco<br/>e immagine.</h2><p className="mt-6 max-w-xl text-lg leading-relaxed">Lorenzo Blaconà attraversa linguaggi e discipline con uno sguardo personale: recitazione, voce, scrittura e progetto grafico diventano parti della stessa ricerca artistica. Una biografia in movimento, costruita tra scena, ascolto e immaginazione.</p><Link to="/cv" className="mt-6 inline-flex items-center gap-2 rounded-none bg-ink px-7 py-6 font-display uppercase text-paper transition-colors hover:bg-hot">Vedi di più CV <ArrowUpRight/></Link></div></div></section>
+      <section id="bio" className="relative z-10 flex min-h-screen items-center overflow-hidden bg-paper px-5 py-14 text-ink md:px-12 md:py-16 lg:px-20"><FloatingMic className="slow-drift pointer-events-none absolute right-16 top-16 hidden h-24 w-16 text-ink/10 lg:block" /><FloatingSquiggle solidColor="var(--ink)" dashColor="var(--hot)" className="pointer-events-none absolute inset-0 hidden h-full w-full lg:block" style={{ opacity: 0.5 }} /><div className="grid w-full max-w-6xl gap-10 md:grid-cols-[.8fr_1.2fr]"><PhotoFrame label="Ritratto" src="/media/ritratto-studio-giacca-occhiali.jpg" tall onOpen={() => setBioLightbox(true)} /><div className="md:pt-14"><p className="font-display text-sm uppercase text-hot">01 / Bio</p><h2 className="mt-3 max-w-lg font-display text-4xl font-bold uppercase leading-[1.05] sm:text-5xl md:text-6xl xl:text-7xl">Dal palco alla platea, sempre con un'idea.</h2><p className="mt-6 max-w-xl text-lg leading-relaxed">Lorenzo Blaconà attraversa linguaggi e discipline con uno sguardo personale: recitazione, voce, scrittura e progetto grafico diventano parti della stessa ricerca artistica. Una biografia in movimento, costruita tra scena, ascolto e immaginazione.</p><Link to="/cv" className="mt-6 inline-flex items-center gap-2 rounded-none bg-ink px-7 py-6 font-display uppercase text-paper transition-colors hover:bg-hot">Vedi di più CV <ArrowUpRight/></Link></div></div></section>
 
       <section id="lavori" className="relative z-10 min-h-screen overflow-hidden bg-ink px-5 py-14 md:px-12 md:py-16 lg:px-20">
         <FloatingClapper className="slow-drift pointer-events-none absolute right-16 top-20 hidden h-20 w-24 text-paper/10 lg:block" />
         <FloatingSquiggle wild className="pointer-events-none absolute inset-0 hidden h-full w-full lg:block" style={{ opacity: 0.5 }} />
-        <p className="font-display text-sm uppercase text-hot">03 / Lavori</p>
+        <p className="font-display text-sm uppercase text-hot">02 / Lavori</p>
         <h2 className="mt-3 max-w-4xl font-display text-5xl font-bold uppercase leading-none xl:text-7xl">Quello<br/>sono io!</h2>
         {/* max-w-[19rem] solo su telefono: la pellicola ("rullino") che scende dalla bobina arriva fin lì
             — oltre, anche solo per l'ultima parola di riga, finiva coperta. Da sm in su torna max-w-xl. */}
@@ -230,15 +230,8 @@ function Index() {
       </section>
 
       <section id="galleria" className="relative z-10 min-h-screen bg-paper px-5 py-12 text-ink md:px-12 md:py-14 lg:px-20">
-        <p className="font-display text-sm uppercase text-hot">04 / Galleria</p>
-        {/* "Fotogrammi." è una sola parola lunga, senza spazi su cui andare a capo naturalmente: su
-            telefono (dove la bobina occupa l'angolo in alto a destra) va spezzata per non finire dietro
-            al disco, esattamente come già fanno "Rassegna stampa." e "Facciamo qualcosa." — ma siccome qui
-            non c'è un secondo "parola" separata, lo spezzo a metà con due <span> che tornano una riga sola
-            da sm in su (sm:inline), quindi su tablet/desktop il risultato è IDENTICO a prima. */}
-        <h2 className="mt-3 font-display text-4xl font-bold uppercase sm:text-5xl xl:text-7xl">
-          <span className="block sm:inline">Foto</span><span className="block sm:inline">grammi.</span>
-        </h2>
+        <p className="font-display text-sm uppercase text-hot">03 / Galleria</p>
+        <h2 className="mt-3 font-display text-4xl font-bold uppercase sm:text-5xl xl:text-7xl">Guardami<br/>meglio.</h2>
         {/* Il pulsante "Vedi tutte le foto" prima stava qui accanto al titolo, in alto a destra — proprio dove
             finisce la bobina fissa, che lo copriva. Ora sta sotto la griglia, fuori da quella zona. */}
         <div className="mt-6 grid gap-4 md:grid-cols-3">
@@ -253,7 +246,12 @@ function Index() {
               <source src="/media/reel-lorenzo.mp4" type="video/mp4" />
             </video>
           </div>
-          <div className="grid grid-rows-2 gap-4">
+          {/* min-h-[28rem] md:min-h-0: sotto "md" questa colonna non condivide più riga con il video (la
+              griglia diventa a colonna unica), quindi non ha più un'altezza "presa in prestito" da lui —
+              senza un minimo esplicito, "fill" (h-full) sulle PhotoFrame non aveva nulla da cui ereditare
+              l'altezza e le due foto sparivano del tutto (0px) su telefono. Da md in su torna 0: l'altezza
+              arriva di nuovo dallo stretch automatico della riga condivisa col video, come prima. */}
+          <div className="grid min-h-[28rem] grid-rows-2 gap-4 md:min-h-0">
             <PhotoFrame label="Applausi finali" src={teaserPhotos[0]} fill onOpen={() => setTeaserLightbox(0)} />
             <PhotoFrame label="Editoriale" src={teaserPhotos[1]} fill onOpen={() => setTeaserLightbox(1)} />
           </div>
@@ -261,15 +259,15 @@ function Index() {
         <Link to="/galleria" className="mt-4 inline-flex items-center justify-center gap-2 rounded-none bg-ink px-6 py-3 font-display uppercase text-paper transition-colors hover:bg-hot">Vedi tutte le foto <ArrowUpRight /></Link>
       </section>
 
-      <section id="press" className="relative z-10 min-h-screen overflow-hidden bg-signal px-5 py-14 text-paper md:px-12 md:py-16 lg:px-20"><Drama strokeWidth={1.5} className="slow-drift pointer-events-none absolute right-16 top-20 hidden h-20 w-20 text-paper/15 lg:block" /><FloatingSquiggle solidColor="var(--paper)" dashColor="var(--ink)" className="pointer-events-none absolute inset-0 hidden h-full w-full lg:block" style={{ opacity: 0.5 }} /><p className="font-display text-sm uppercase">05 / Parlano di me</p><h2 className="mt-3 max-w-4xl font-display text-4xl font-bold uppercase leading-none sm:text-5xl xl:text-8xl">Rassegna<br/>stampa.</h2><div className="mt-8 grid gap-px bg-paper/30 md:grid-cols-3">{[
+      <section id="press" className="relative z-10 min-h-screen overflow-hidden bg-signal px-5 py-14 text-paper md:px-12 md:py-16 lg:px-20"><Drama strokeWidth={1.5} className="slow-drift pointer-events-none absolute right-16 top-20 hidden h-20 w-20 text-paper/15 lg:block" /><FloatingSquiggle solidColor="var(--paper)" dashColor="var(--ink)" className="pointer-events-none absolute inset-0 hidden h-full w-full lg:block" style={{ opacity: 0.5 }} /><p className="font-display text-sm uppercase">04 / Parlano di me</p><h2 className="mt-3 max-w-4xl font-display text-4xl font-bold uppercase leading-none sm:text-5xl xl:text-8xl">La rassegna stampa…</h2><div className="mt-8 grid gap-px bg-paper/30 md:grid-cols-3">{[
           { outlet: "L'Eco di Bergamo", date: "24 set 2026", title: "«Cosa desideri?» — A Cassano la musica incontra il teatro", href: "/media/press-cosa-desideri-eco-bergamo.pdf" },
           { outlet: "Milano Etno TV", date: "11 set 2026", title: "Teatro Utile: laboratorio su clima e migrazioni in scena a Milano", href: "https://www.milanoetnotv.it/2026/09/11/teatro-utile-i-lavori-del-laboratorio-su-clima-e-migrazioni-in-scena-a-milano/" },
           { outlet: "Slow Mill", date: "9 apr 2026", title: "Brasserie, di Koffi Kwahulé — regia di Tiziana Bergamaschi", href: "https://www.slowmill.it/evento/brasserie-spettacolo-teatrale-2/" },
-        ].map((a)=><a key={a.title} href={a.href} target="_blank" rel="noreferrer" className="group block min-h-56 border-t-4 border-hot bg-ink p-7 transition-colors hover:bg-hot hover:text-ink"><span className="text-xs uppercase text-hot group-hover:text-ink/70">{a.outlet} · {a.date}</span><h3 className="mt-10 font-display text-3xl leading-tight text-paper group-hover:text-ink">{a.title}</h3><span className="mt-4 inline-flex items-center gap-2 text-paper/75 group-hover:text-ink">Leggi <ArrowUpRight className="h-4 w-4"/></span></a>)}</div><Link to="/news" className="mt-6 inline-flex items-center gap-2 rounded-none bg-paper px-6 py-3 font-display uppercase text-ink transition-colors hover:bg-ink hover:text-paper">Vedi di più news <ArrowUpRight/></Link></section>
+        ].map((a,i)=><a key={a.title} href={a.href} target="_blank" rel="noreferrer" className={`group block min-h-56 p-7 transition-colors hover:bg-paper hover:text-ink ${i % 2 === 0 ? "bg-ink" : "bg-signal"}`}><span className="text-xs uppercase text-paper/70 group-hover:text-ink/70">{a.outlet} · {a.date}</span><h3 className="mt-10 font-display text-3xl leading-tight">{a.title}</h3><span className="mt-4 inline-flex items-center gap-2 text-paper/75 group-hover:text-ink">Leggi <ArrowUpRight className="h-4 w-4"/></span></a>)}</div><Link to="/news" className="mt-6 inline-flex items-center gap-2 rounded-none bg-paper px-6 py-3 font-display uppercase text-ink transition-colors hover:bg-ink hover:text-paper">Vedi di più news <ArrowUpRight/></Link></section>
 
       <footer id="contatti" className="relative z-10 min-h-screen overflow-hidden bg-ink px-5 py-14 md:px-12 md:py-16 lg:px-20">
         <FloatingSquiggle solidColor="var(--hot)" dashColor="var(--paper)" wild className="pointer-events-none absolute inset-0 hidden h-full w-full lg:block" style={{ opacity: 0.5 }} />
-        <p className="font-display text-sm uppercase text-hot">06 / Contatti</p>
+        <p className="font-display text-sm uppercase text-hot">05 / Contatti</p>
         <h2 className="mt-3 max-w-5xl font-display text-[clamp(2.25rem,9vw,7rem)] font-bold uppercase leading-[.82]">Facciamo<br/><span className="text-hot">qualcosa.</span></h2>
         {/* max-w-[11rem] solo su telefono: a quella larghezza il testo non entra mai nella zona che la
             bobina copre (stessa logica dei titoli già sistemati sopra) — da sm in su torna max-w-xl, invariato. */}

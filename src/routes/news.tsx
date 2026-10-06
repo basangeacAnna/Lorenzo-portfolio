@@ -105,25 +105,24 @@ const news: NewsItem[] = [
   },
 ];
 
-function NewsCard({ item, onOpenScan }: { item: NewsItem; onOpenScan: () => void }) {
-  // Stesso identico aspetto per tutte le card (uniforme, non più alternato nero/rosso — "sembrava un
-  // caos a scacchiera"): sfondo nero fisso, accento rosso solo nel bordo superiore e nel link "Leggi" —
-  // è quell'accento a "rompere" la monotonia, non il colore di sfondo che cambia da riquadro a riquadro.
-  // I ritagli di giornale (niente href, solo scan) si aprono come foto a schermo intero invece di un link
-  // esterno, ma con la stessa identica struttura/stile delle altre: nessun trattamento speciale.
+function NewsCard({ item, index, onOpenScan }: { item: NewsItem; index: number; onOpenScan: () => void }) {
+  // Scacchiera nero/rosso alternata su richiesta esplicita del cliente (tornata indietro dopo un giro:
+  // prima uniforme, poi richiesta di nuovo a scacchiera "come avevi fatto prima"). I ritagli di giornale
+  // (niente href, solo scan) si aprono come foto a schermo intero invece di un link esterno, stessa
+  // struttura/stile delle altre card.
   const inner = (
     <>
       {item.img && <img src={item.img} alt={item.title} className="mb-5 h-40 w-full border border-paper/20 object-cover object-top" />}
-      <span className="text-xs uppercase text-hot">{item.outlet} · {item.date}</span>
+      <span className="text-xs uppercase text-paper/70 group-hover:text-ink/70">{item.outlet} · {item.date}</span>
       <h3 className="mt-3 font-display text-2xl leading-tight">{item.title}</h3>
-      <p className="mt-4 text-sm text-paper/75">{item.excerpt}</p>
-      <span className="mt-auto inline-flex w-fit items-center gap-2 pt-5 font-display text-sm uppercase text-paper group-hover:text-hot">
+      <p className="mt-4 text-sm text-paper/75 group-hover:text-ink/75">{item.excerpt}</p>
+      <span className="mt-auto inline-flex w-fit items-center gap-2 pt-5 font-display text-sm uppercase text-paper group-hover:text-ink">
         {item.href ? "Leggi" : "Vedi la foto"} <ArrowUpRight className="h-4 w-4" />
       </span>
     </>
   );
 
-  const className = "group flex min-h-80 flex-col border-t-4 border-hot bg-ink p-7 text-left transition-colors hover:bg-ink/80";
+  const className = `group flex min-h-80 flex-col p-7 text-left transition-colors hover:bg-paper hover:text-ink ${index % 2 === 0 ? "bg-ink" : "bg-signal"}`;
 
   if (item.href) {
     return <a href={item.href} target="_blank" rel="noreferrer" className={className}>{inner}</a>;
@@ -143,9 +142,9 @@ function NewsPage() {
       <h1 className="mt-8 font-display text-6xl font-bold uppercase leading-none md:text-8xl">News & press.</h1>
       <p className="mt-4 max-w-xl text-lg text-paper/80">Interviste, recensioni e nuove pubblicazioni su Lorenzo Blaconà.</p>
 
-      <div className="mt-16 grid gap-px bg-paper/20 border-t border-paper/20 md:grid-cols-3">
-        {news.map((n) => (
-          <NewsCard key={n.title} item={n} onOpenScan={() => setScanLightbox(n.img ?? null)} />
+      <div className="mt-16 grid gap-px bg-paper/30 border-t border-paper/30 md:grid-cols-3">
+        {news.map((n, i) => (
+          <NewsCard key={n.title} item={n} index={i} onOpenScan={() => setScanLightbox(n.img ?? null)} />
         ))}
       </div>
 
