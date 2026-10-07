@@ -204,22 +204,18 @@ function FilmStrip() {
   // prima, perché è una FRAZIONE della pagina intera, non un numero di pixel fisso. Dopo quel punto resta
   // ferma lì (nessun rimbalzo, nessun ricalcolo "live" che prima causava gli scatti imprevedibili
   // confrontando due limiti diversi ad ogni frame).
-  // Su telefono le sezioni sono impilate a piena altezza una sotto l'altra (niente colonne affiancate come
-  // da md in su), quindi la pagina totale è proporzionalmente molto più lunga rispetto a quanto la striscia
-  // possa comunque "mostrare" (il suo massimo resta sempre un solo schermo, vedi viewportCap sopra): usando
-  // la STESSA frazione lenta di desktop, a metà pagina la striscia aveva srotolato solo una piccola parte
-  // del suo massimo — sembrava essersi fermata a mezza altezza invece di continuare a scendere. Frazione
-  // dimezzata solo su telefono: la striscia raggiunge il suo massimo (comunque invariato, un solo schermo)
-  // già a metà dello scroll totale invece che quasi alla fine, quindi per la stessa quantità scrollata
-  // scende visibilmente di più. Da sm in su invariato (desktop/tablet già confermati corretti).
+  // Stessa frazione su ogni larghezza: la striscia raggiunge il suo massimo esattamente quando si arriva
+  // all'ULTIMA sezione, non prima. (Prima c'era qui una frazione dimezzata SOLO per telefono: era una
+  // toppa sbagliata per un sintomo — sembrava fermarsi a mezza altezza — la cui vera causa era il bug di
+  // scala qui sotto, non ancora corretto allora. Con lo scale già risolto, quella toppa faceva arrivare la
+  // striscia al massimo già a metà dello scroll totale invece che in fondo, restando poi "ferma" per tutta
+  // la seconda metà della pagina — rimossa.)
   const PROGRESS_TARGET = (sections.length - 1) / sections.length;
-  const MOBILE_PROGRESS_TARGET = PROGRESS_TARGET / 2;
   const rawHeight = useTransform(scrollYProgress, (p) => {
     // typeof window: in SSR (TanStack Start) questa funzione viene comunque valutata una volta lato
     // server, dove "window" non esiste — senza guardia l'intera pagina cadeva in client-side rendering.
     if (typeof window === "undefined") return 0;
-    const target = window.innerWidth < 640 ? MOBILE_PROGRESS_TARGET : PROGRESS_TARGET;
-    const eased = Math.min(p / target, 1);
+    const eased = Math.min(p / PROGRESS_TARGET, 1);
     // viewportCap è misurato in pixel REALI sullo schermo (getBoundingClientRect, dopo lo scale-[...] del
     // <nav> genitore) — ma l'altezza CSS impostata qui sotto ("height") viene letta PRIMA che quello
     // scale si applichi, quindi viene rimpicciolita della stessa proporzione quando va a schermo. Senza
