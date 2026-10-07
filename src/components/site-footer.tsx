@@ -15,7 +15,10 @@ export function SiteFooter({ theme = "dark" }: { theme?: "dark" | "light" }) {
   return (
     <footer className={`relative z-10 mt-16 border-t ${border} px-5 py-8 md:px-12 lg:px-20`}>
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <p className={`text-xs uppercase ${muted}`}>© 2026 Lorenzo Blaconà — Tutti i diritti riservati</p>
+        <div>
+          <p className={`text-xs uppercase ${muted}`}>© 2026 Lorenzo Blaconà — Tutti i diritti riservati</p>
+          <p className={`mt-1 text-xs uppercase ${muted}`}>Realizzato da Anna Maria Basangeac — concept grafico con Lorenzo Blaconà</p>
+        </div>
         <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
           <Link to="/scrivimi" className="inline-flex items-center gap-1 font-display text-xs uppercase text-hot hover:opacity-70">
             Scrivimi <ArrowUpRight className="h-3 w-3" />
