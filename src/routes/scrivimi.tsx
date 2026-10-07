@@ -40,10 +40,12 @@ function ScrivimiPage() {
       <Link to="/" hash="contatti" className="inline-flex items-center gap-2 font-display text-xs uppercase text-hot sm:text-sm">
         <ArrowLeft className="h-4 w-4" /> <span className="sm:hidden">Portfolio</span><span className="hidden sm:inline">Torna al portfolio</span>
       </Link>
-      {/* Stesso trattamento di "Fotogrammi." in home: parola unica spezzata solo su telefono (dove
-          altrimenti finirebbe dietro la bobina in alto a destra), ricomposta su una riga da sm in su. */}
-      <h1 className="mt-8 font-display text-4xl font-bold uppercase leading-none sm:text-6xl md:text-8xl">
-        <span className="block sm:inline">Scrivi</span><span className="block sm:inline">mi.</span>
+      {/* Prima andava a capo su telefono ("Scrivi-mi.") per non finire sotto la bobina: visivamente brutto.
+          Ora resta su una riga anche su telefono, con una dimensione legata alla larghezza schermo (7vw)
+          invece che fissa — si rimpicciolisce da sola sugli schermi più stretti restando sempre a sinistra
+          della bobina, senza bisogno di indovinare un valore fisso per ogni larghezza possibile. */}
+      <h1 className="mt-8 whitespace-nowrap font-display text-[7vw] font-bold uppercase leading-none sm:whitespace-normal sm:text-6xl md:text-8xl">
+        Scrivimi.
       </h1>
       <p className="mt-5 max-w-xl text-lg text-paper/80">
         Compila il form: si apre già tutto pronto nella tua email, un click e parte.

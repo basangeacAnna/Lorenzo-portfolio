@@ -20,7 +20,11 @@ const REEL_BOX = 28;      // rem — lato del riquadro che contiene l'intera bob
 const REEL_OFFSET = 3;    // (in unità Tailwind, = 0.75rem) distanza dal bordo alto e dal bordo destro del nav: STESSA su entrambi i lati — più basso = bobina più incastrata nell'angolo
 const RING_SIZE = 26;     // rem — diametro dell'anello rosa esterno
 const RING_BORDER = 1;    // rem — spessore dell'anello rosa (uguale su tutto il perimetro per costruzione: è un cerchio CSS)
-const HUB_SIZE = 12;      // rem — diametro del mozzo centrale chiaro
+const HUB_SIZE = 14;      // rem — diametro del mozzo centrale chiaro (deve combaciare con h-56/w-56 più sotto:
+                           // era rimasto a 12 per un disallineamento vecchio, e con quel valore sbagliato
+                           // ARC_RADIUS risultava troppo vicino al mozzo reale — a schermi piccoli le
+                           // etichette (soprattutto quelle ruotate, che proiettano radialmente più della
+                           // loro sola altezza) arrivavano a toccare/sconfinare nell'anello grigio del mozzo)
 const HUB_BORDER = 0.6;   // rem — spessore del bordo del mozzo
 const DOT_ORBIT = (HUB_SIZE / 2) * 0.55; // rem — raggio a cui girano i 5 forellini dentro il mozzo
 // Centro della bobina rispetto al box <nav> (che è il contenitore di riferimento per gli elementi absolute):
@@ -66,18 +70,19 @@ export function ReelNav({ active }: { active: number }) {
     return () => controls.stop();
   }, [active, wheelAngle]);
 
-  return <nav aria-label="Navigazione principale" className="fixed -right-17 -top-17 z-150 h-[32rem] w-[32rem] origin-top-right rounded-bl-[80%] scale-[0.4] sm:-right-34 sm:-top-34 sm:scale-[0.8] md:-right-36 md:-top-36 md:scale-[0.85] xl:-right-42 xl:-top-42 xl:scale-100">
+  return <nav aria-label="Navigazione principale" className="fixed -right-21 -top-21 z-150 h-[32rem] w-[32rem] origin-top-right rounded-bl-[80%] scale-[0.5] sm:-right-34 sm:-top-34 sm:scale-[0.8] md:-right-36 md:-top-36 md:scale-[0.85] xl:-right-42 xl:-top-42 xl:scale-100">
     {/* La STESSA identica bobina ad ogni larghezza di schermo (nessuna barra/stile diverso su mobile): cambia
         solo la scala, sempre "incastonata" nell'angolo in alto a destra — sbordando leggermente fuori dal
         bordo dello schermo esattamente come su desktop (non un cerchio pieno e fluttuante su telefono).
-        Scala telefono dimezzata su richiesta esplicita (0.75 → 0.4, era già stata tirata dentro con un
-        offset proporzionalmente più aggressivo delle altre fasce, ma restava comunque troppo ingombrante e
-        con le etichette che finivano schiacciate sopra l'anello invece che nel vano libero tra anello e
-        mozzo): offset ricalcolato sulla stessa proporzione offset/scala delle fasce sm/md/xl (~10.5), non
-        più quello "spinto" di prima. NON toccare sm/md/xl: desktop e tablet erano già confermati perfetti
-        così. Cellulare piccolo → tablet → desktop: 0.4 → 0.8 (da 640px) → 0.85 (da 768px) → 1 (piena, da
-        1280px). Sotto 0.4 le scritte (font fisso, scalato col resto) diventavano davvero illeggibili: questo
-        è già il limite più basso ragionevole. */}
+        Scala telefono: 0.4 era illeggibile ("si vede pochino le frasi"), alzata a 0.5. Offset tornato
+        proporzionale alle altre fasce (~10.5× la scala, cioè -21 a scala 0.5) su richiesta esplicita: un
+        offset quasi fisso più piccolo (provato con -5/-6) teneva sì tutte le etichette raggiungibili, ma
+        faceva sembrare la bobina "scappata" fuori dall'angolo, fluttuante a metà schermo invece che
+        incastonata — cambiava troppo l'aspetto rispetto all'originale. Tornando a questo offset proporzionale
+        alcune etichette lontane dall'attiva restano fuori schermo in un dato istante (stesso comportamento,
+        proporzionalmente, di sm/md/xl): quelle vicine all'attiva restano sempre raggiungibili, le altre
+        rientrano ruotando mano a mano che si scorre. NON toccare sm/md/xl: quelle fasce restano invariate.
+        Cellulare piccolo → tablet → desktop: 0.5 → 0.8 (da 640px) → 0.85 (da 768px) → 1 (piena, da 1280px). */}
     {/* Contenitore generale (l'angolo a quarto di cerchio in alto a destra): h-/w- = dimensione totale, rounded-bl-[%] = quanto è arrotondato l'angolo */}
 
     <FilmStrip />
@@ -146,6 +151,17 @@ export function ReelNav({ active }: { active: number }) {
   </nav>;
 }
 
+// Stesse soglie/valori dello scale-[...] sul <nav> più sopra (base/sm/md/xl): se quelli cambiano, questa
+// funzione va aggiornata insieme — usata per "annullare" l'effetto dello scale sull'altezza della pellicola.
+function getNavScale(): number {
+  if (typeof window === "undefined") return 1;
+  const w = window.innerWidth;
+  if (w >= 1280) return 1;
+  if (w >= 768) return 0.85;
+  if (w >= 640) return 0.8;
+  return 0.5;
+}
+
 // --- Pellicola che scende dalla bobina ---
 // Vista di fronte (non di taglio), come una vera pellicola: striscia NERA con due colonne di forellini
 // BIANCHI ai bordi, e un riquadro BIANCO (il "fotogramma") al centro di ognuna — non il contrario.
@@ -183,18 +199,36 @@ function FilmStrip() {
   }, []);
 
   // PROGRESS_TARGET = la frazione di pagina a cui inizia l'ULTIMA sezione (Contatti, sempre l'ultima
-  // dell'elenco "sections"): la striscia cresce in modo lineare e lentissimo da 0 a quel punto, quindi
-  // "finisce di srotolarsi" (raggiunge la sua altezza massima) proprio quando si arriva in fondo alla
-  // pagina — non prima, né su telefono né su desktop, perché è una FRAZIONE della pagina intera, non un
-  // numero di pixel fisso. Dopo quel punto resta ferma lì (nessun rimbalzo, nessun ricalcolo "live" che
-  // prima causava gli scatti imprevedibili confrontando due limiti diversi ad ogni frame).
+  // dell'elenco "sections"): la striscia cresce in modo lineare da 0 a quel punto, quindi "finisce di
+  // srotolarsi" (raggiunge la sua altezza massima) proprio quando si arriva in fondo alla pagina — non
+  // prima, perché è una FRAZIONE della pagina intera, non un numero di pixel fisso. Dopo quel punto resta
+  // ferma lì (nessun rimbalzo, nessun ricalcolo "live" che prima causava gli scatti imprevedibili
+  // confrontando due limiti diversi ad ogni frame).
+  // Su telefono le sezioni sono impilate a piena altezza una sotto l'altra (niente colonne affiancate come
+  // da md in su), quindi la pagina totale è proporzionalmente molto più lunga rispetto a quanto la striscia
+  // possa comunque "mostrare" (il suo massimo resta sempre un solo schermo, vedi viewportCap sopra): usando
+  // la STESSA frazione lenta di desktop, a metà pagina la striscia aveva srotolato solo una piccola parte
+  // del suo massimo — sembrava essersi fermata a mezza altezza invece di continuare a scendere. Frazione
+  // dimezzata solo su telefono: la striscia raggiunge il suo massimo (comunque invariato, un solo schermo)
+  // già a metà dello scroll totale invece che quasi alla fine, quindi per la stessa quantità scrollata
+  // scende visibilmente di più. Da sm in su invariato (desktop/tablet già confermati corretti).
   const PROGRESS_TARGET = (sections.length - 1) / sections.length;
+  const MOBILE_PROGRESS_TARGET = PROGRESS_TARGET / 2;
   const rawHeight = useTransform(scrollYProgress, (p) => {
     // typeof window: in SSR (TanStack Start) questa funzione viene comunque valutata una volta lato
     // server, dove "window" non esiste — senza guardia l'intera pagina cadeva in client-side rendering.
     if (typeof window === "undefined") return 0;
-    const eased = Math.min(p / PROGRESS_TARGET, 1);
-    return eased * geometry.current.viewportCap;
+    const target = window.innerWidth < 640 ? MOBILE_PROGRESS_TARGET : PROGRESS_TARGET;
+    const eased = Math.min(p / target, 1);
+    // viewportCap è misurato in pixel REALI sullo schermo (getBoundingClientRect, dopo lo scale-[...] del
+    // <nav> genitore) — ma l'altezza CSS impostata qui sotto ("height") viene letta PRIMA che quello
+    // scale si applichi, quindi viene rimpicciolita della stessa proporzione quando va a schermo. Senza
+    // dividere per la scala corrente, su ogni fascia sotto xl (telefono 0.5, sm 0.8, md 0.85) la striscia
+    // si fermava a metà (o poco più) della sua lunghezza massima invece di arrivare davvero in fondo allo
+    // schermo: dividendo per la scala, l'altezza richiesta è più "gonfia" della misura giusta in modo che,
+    // una volta rimpicciolita dallo stesso scale, il risultato visivo torni a combaciare con viewportCap.
+    const scale = getNavScale();
+    return (eased * geometry.current.viewportCap) / scale;
   });
   // useSpring aggiunge inerzia nel TEMPO sopra al valore già lineare/lento: qualunque micro-salto dello
   // scroll (rotella del mouse a scatti, non continua come un dito sul touch) arriva smussato, mai un

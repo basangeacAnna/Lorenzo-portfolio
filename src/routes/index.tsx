@@ -3,6 +3,17 @@ import { ArrowDownRight, ArrowUpRight, Drama, Instagram, Mail, Maximize2, Play }
 import { useEffect, useState, type CSSProperties } from "react";
 import { ReelNav, sections, ids } from "@/components/reel-nav";
 import { Lightbox } from "@/components/lightbox";
+import { getNewsFromSheet } from "@/lib/news-sheet";
+
+// Anteprima "Parlano di me": stessa fonte della pagina /news (il Google Sheet di Lorenzo), solo i primi 3
+// con un link esterno (niente scan di giornale senza href qui — l'anteprima in home è solo link "Leggi",
+// la lightbox per gli scan c'è solo nella pagina /news completa). Fallback verificato se il foglio non è
+// ancora raggiungibile/compilato.
+const FALLBACK_PRESS = [
+  { outlet: "L'Eco di Bergamo", date: "24 set 2026", title: "«Cosa desideri?» — A Cassano la musica incontra il teatro", href: "/media/press-cosa-desideri-eco-bergamo.pdf" },
+  { outlet: "Milano Etno TV", date: "11 set 2026", title: "Teatro Utile: laboratorio su clima e migrazioni in scena a Milano", href: "https://www.milanoetnotv.it/2026/09/11/teatro-utile-i-lavori-del-laboratorio-su-clima-e-migrazioni-in-scena-a-milano/" },
+  { outlet: "Slow Mill", date: "9 apr 2026", title: "Brasserie, di Koffi Kwahulé — regia di Tiziana Bergamaschi", href: "https://www.slowmill.it/evento/brasserie-spettacolo-teatrale-2/" },
+];
 
 // Foto "teaser" accanto al video in Galleria: due scatti pensati per dare una prima impressione forte a
 // chi apre il sito — un momento di scena dal vivo + un primo piano normale. La seconda era
@@ -21,6 +32,11 @@ const works = [
 ];
 
 export const Route = createFileRoute("/")({
+  loader: async () => {
+    const sheetNews = await getNewsFromSheet();
+    const withLink = sheetNews.filter((n) => n.href);
+    return { press: (withLink.length > 0 ? withLink : FALLBACK_PRESS).slice(0, 3) };
+  },
   head: () => ({ meta: [
     { title: "Lorenzo Blaconà — Attore, Cantante, Scrittore, Grafico" },
     { name: "description", content: "Portfolio artistico di Lorenzo Blaconà: teatro, musica, scrittura e grafica." },
@@ -136,6 +152,7 @@ function FloatingSquiggle({ className, style, solidColor = "var(--signal)", dash
 }
 
 function Index() {
+  const { press } = Route.useLoaderData();
   const [active, setActive] = useState(0);
   const [bioLightbox, setBioLightbox] = useState(false);
   const [teaserLightbox, setTeaserLightbox] = useState<number | null>(null);
@@ -174,36 +191,48 @@ function Index() {
       )}
       <svg aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-70" viewBox="0 0 1200 900" preserveAspectRatio="none"><path d="M-100 700 C 260 310, 500 980, 1300 160" fill="none" stroke="var(--signal)" strokeWidth="22"/><path className="neon-trail" d="M-100 770 C 300 350, 650 1000, 1300 290" fill="none" stroke="var(--hot)" strokeWidth="6"/></svg>
 
-      <section id="top" className="relative z-10 grid min-h-[100vh] items-center px-5 pb-14 pt-8 md:grid-cols-[1.1fr_.9fr] md:items-end md:px-10 lg:px-16">
+      <section id="top" className="relative z-10 grid min-h-[100vh] items-center px-5 pb-14 pt-50 md:grid-cols-[1.1fr_.9fr] md:items-end md:px-10 md:pt-8 lg:px-16">
         {/* Come nel riferimento del cliente: un anello FITTO di elementi colorati PIENI (non trasparenti)
             stretto intorno al blocco del nome — 5 icone a tema (un mestiere ciascuna) + quadrati/cerchi
             a tinta unita nei colori della palette (i quadrati/cerchi stessi sono coerenti col profilo di
             Lorenzo "grafico"). Visibili anche su telefono (prima erano "hidden md:block": sparivano del
             tutto sotto i 768px) — solo più piccole, per non affollare uno schermo stretto quanto uno largo. */}
-        <FloatingMic className="slow-drift pointer-events-none absolute left-[0%] top-[34%] h-10 w-8 -rotate-6 text-hot/70 md:h-16 md:w-12" />
-        <FloatingClapper className="slow-drift pointer-events-none absolute left-[40%] top-[36%] h-9 w-11 rotate-6 text-paper/60 md:h-14 md:w-18" style={{ animationDelay: "-2.5s" }} />
-        <Drama strokeWidth={1.5} className="slow-drift pointer-events-none absolute left-[36%] top-[72%] h-8 w-8 -rotate-3 text-hot/60 md:h-12 md:w-12" style={{ animationDelay: "-5s" }} />
+        {/* Posizioni su telefono ricalcolate apposta per stare SOLO negli spazi vuoti (striscia sopra al
+            testo, striscia tra testo e foto, striscia sotto la foto) — mai sotto al testo o sotto alla
+            foto: misurato con le bounding box reali (testo 123–346px, foto 461–748px su 844px di altezza
+            schermo) quali delle posizioni percentuali originali (pensate solo per il layout desktop a due
+            colonne, dove testo e foto sono affiancati e non impilati) finivano nascoste dietro l'uno o
+            l'altra. Da md in su tornano le posizioni originali, invariate. */}
+        <FloatingMic className="slow-drift pointer-events-none absolute left-[10%] top-[18%] h-10 w-8 -rotate-6 text-hot/70 md:left-[0%] md:top-[34%] md:h-16 md:w-12" />
+        <FloatingClapper className="slow-drift pointer-events-none absolute left-[38%] top-[15%] h-9 w-11 rotate-6 text-paper/60 md:left-[40%] md:top-[36%] md:h-14 md:w-18" style={{ animationDelay: "-2.5s" }} />
+        <Drama strokeWidth={1.5} className="slow-drift pointer-events-none absolute left-[65%] top-[93%] h-8 w-8 -rotate-3 text-hot/60 md:left-[36%] md:top-[72%] md:h-12 md:w-12" style={{ animationDelay: "-5s" }} />
         <FloatingNote className="slow-drift pointer-events-none absolute -left-[2%] top-[66%] h-9 w-7 rotate-6 text-paper/60 md:h-14 md:w-10" style={{ animationDelay: "-1.5s" }} />
         <FloatingPen className="pointer-events-none absolute left-[14%] top-[88%] h-7 w-7 -rotate-12 text-hot/65 md:h-11 md:w-11" />
-        <div className="pointer-events-none absolute left-[11%] top-[26%] h-5 w-5 rotate-12 bg-hot md:h-7 md:w-7" />
-        <div className="slow-drift pointer-events-none absolute left-[28%] top-[20%] h-4 w-4 rounded-full bg-signal md:h-6 md:w-6" style={{ animationDelay: "-4s" }} />
-        <div className="pointer-events-none absolute left-[50%] top-[26%] h-3 w-3 rounded-full bg-paper md:h-5 md:w-5" />
-        <div className="pointer-events-none absolute left-[58%] top-[46%] h-5 w-5 -rotate-6 bg-paper/90 md:h-8 md:w-8" />
+        <div className="pointer-events-none absolute left-[58%] top-[19%] h-5 w-5 rotate-12 bg-hot md:left-[11%] md:top-[26%] md:h-7 md:w-7" />
+        <div className="slow-drift pointer-events-none absolute left-[22%] top-[20%] h-4 w-4 rounded-full bg-signal md:left-[28%] md:top-[20%] md:h-6 md:w-6" style={{ animationDelay: "-4s" }} />
+        <div className="pointer-events-none absolute left-[48%] top-[21%] h-3 w-3 rounded-full bg-paper md:left-[50%] md:top-[26%] md:h-5 md:w-5" />
+        <div className="pointer-events-none absolute left-[75%] top-[54%] h-5 w-5 -rotate-6 bg-paper/90 md:h-8 md:w-8" />
         <div className="slow-drift pointer-events-none absolute left-[2%] top-[48%] h-3 w-3 rounded-full bg-hot md:h-5 md:w-5" style={{ animationDelay: "-3s" }} />
         <div className="pointer-events-none absolute left-[7%] top-[82%] h-5 w-5 rotate-45 bg-signal md:h-7 md:w-7" />
         <div className="pointer-events-none absolute left-[24%] top-[93%] h-3 w-3 rounded-full bg-paper/80 md:h-4 md:w-4" />
-        <div className="slow-drift pointer-events-none absolute left-[46%] top-[84%] h-4 w-4 rotate-12 bg-hot/85 md:h-6 md:w-6" style={{ animationDelay: "-6s" }} />
-        <div className="pointer-events-none absolute left-[56%] top-[62%] h-3 w-3 rounded-full bg-signal md:h-4 md:w-4" />
-        <div className="pointer-events-none absolute left-[20%] top-[42%] h-3 w-3 rotate-[20deg] bg-paper/80 md:h-5 md:w-5" />
-        <div className="relative z-10 md:pb-10"><h1 className="max-w-5xl font-display text-[clamp(3.5rem,9vw,7rem)] font-bold uppercase leading-[.78]">Lorenzo<br/><span className="text-transparent [-webkit-text-stroke:1px_var(--paper)]">Blaconà</span></h1><p className="mt-6 font-display text-base uppercase md:text-xl">Attore • Cantante • Scrittore • Grafico<br/><span className="text-sm normal-case italic text-muted-foreground md:text-base">...e un gran sognatore</span></p><ArrowDownRight className="mt-6 h-10 w-10 text-hot" /></div>
+        <div className="slow-drift pointer-events-none absolute left-[20%] top-[60%] h-4 w-4 rotate-12 bg-hot/85 md:left-[46%] md:top-[84%] md:h-6 md:w-6" style={{ animationDelay: "-6s" }} />
+        <div className="pointer-events-none absolute left-[40%] top-[94%] h-3 w-3 rounded-full bg-signal md:left-[56%] md:top-[62%] md:h-4 md:w-4" />
+        <div className="pointer-events-none absolute left-[15%] top-[55%] h-3 w-3 rotate-[20deg] bg-paper/80 md:h-5 md:w-5" />
+        <div className="relative z-10 md:pb-10"><h1 className="max-w-5xl font-display text-[clamp(3.5rem,9vw,7rem)] font-bold uppercase leading-[.78]">Lorenzo<br/><span className="mt-1 inline-block text-transparent [-webkit-text-stroke:1px_var(--paper)]">Blaconà</span></h1><p className="mt-6 font-display text-base uppercase md:text-xl">Attore • Cantante • Scrittore • Grafico<br/><span className="text-sm normal-case italic text-muted-foreground md:text-base">...e un gran sognatore</span></p><ArrowDownRight className="mt-6 h-10 w-10 text-hot" /></div>
+        {/* Stessa foto della versione desktop (sotto, "hidden md:block"), ma prima non c'era NESSUNA versione
+            per telefono: la foto spariva del tutto sotto i 768px. Qui una versione più semplice (niente
+            posizionamento assoluto su 75vh, che presume lo spazio affiancato del layout a due colonne da md
+            in su) — un riquadro in-flow nello spazio libero sotto al testo, stessa rotazione/bordo "storto"
+            della versione desktop. */}
+        <div className="relative z-10 ml-auto mt-8 aspect-[4/5] w-56 overflow-hidden rotate-2 border-2 border-hot bg-muted sm:w-64 md:hidden"><img src="/media/editoriale-scivolo-dallalto-02.jpg" alt="Lorenzo Blaconà" className="h-full w-full object-cover" /></div>
         <div className="relative hidden h-[75vh] md:block"><div className="absolute inset-10 right-20 overflow-hidden rotate-2 border-2 border-hot bg-muted"><img src="/media/editoriale-scivolo-dallalto-02.jpg" alt="Lorenzo Blaconà" className="h-full w-full object-cover" /></div></div>
       </section>
 
-      <section id="bio" className="relative z-10 flex min-h-screen items-center overflow-hidden bg-paper px-5 py-14 text-ink md:px-12 md:py-16 lg:px-20"><FloatingMic className="slow-drift pointer-events-none absolute right-16 top-16 hidden h-24 w-16 text-ink/10 lg:block" /><FloatingSquiggle solidColor="var(--ink)" dashColor="var(--hot)" className="pointer-events-none absolute inset-0 hidden h-full w-full lg:block" style={{ opacity: 0.5 }} /><div className="grid w-full max-w-6xl gap-10 md:grid-cols-[.8fr_1.2fr]"><PhotoFrame label="Ritratto" src="/media/ritratto-studio-giacca-occhiali.jpg" tall onOpen={() => setBioLightbox(true)} /><div className="md:pt-14"><p className="font-display text-sm uppercase text-hot">01 / Bio</p><h2 className="mt-3 max-w-lg font-display text-4xl font-bold uppercase leading-[1.05] sm:text-5xl md:text-6xl xl:text-7xl">Dal palco alla platea, sempre con un'idea.</h2><p className="mt-6 max-w-xl text-lg leading-relaxed">Lorenzo Blaconà attraversa linguaggi e discipline con uno sguardo personale: recitazione, voce, scrittura e progetto grafico diventano parti della stessa ricerca artistica. Una biografia in movimento, costruita tra scena, ascolto e immaginazione.</p><Link to="/cv" className="mt-6 inline-flex items-center gap-2 rounded-none bg-ink px-7 py-6 font-display uppercase text-paper transition-colors hover:bg-hot">Vedi di più CV <ArrowUpRight/></Link></div></div></section>
+      <section id="bio" className="relative z-10 flex min-h-screen items-center overflow-hidden bg-paper px-5 py-14 text-ink md:px-12 md:py-16 lg:px-20"><FloatingMic className="slow-drift pointer-events-none absolute right-16 top-16 hidden h-24 w-16 text-ink/10 lg:block" /><FloatingSquiggle solidColor="var(--ink)" dashColor="var(--hot)" className="pointer-events-none absolute inset-0 h-full w-full opacity-35 lg:opacity-50" /><div className="grid w-full max-w-6xl gap-10 md:grid-cols-[.8fr_1.2fr]"><PhotoFrame label="Ritratto" src="/media/ritratto-studio-giacca-occhiali.jpg" tall onOpen={() => setBioLightbox(true)} /><div className="md:pt-14"><p className="font-display text-sm uppercase text-hot">01 / Bio</p><h2 className="mt-3 max-w-lg font-display text-4xl font-bold uppercase leading-[1.05] sm:text-5xl md:text-6xl xl:text-7xl">Dal palco alla platea, sempre con un'idea.</h2><p className="mt-6 max-w-xl text-lg leading-relaxed">Lorenzo Blaconà attraversa linguaggi e discipline con uno sguardo personale: recitazione, voce, scrittura e progetto grafico diventano parti della stessa ricerca artistica. Una biografia in movimento, costruita tra scena, ascolto e immaginazione.</p><Link to="/cv" className="mt-6 inline-flex items-center gap-2 rounded-none bg-ink px-7 py-6 font-display uppercase text-paper transition-colors hover:bg-hot">Vedi di più CV <ArrowUpRight/></Link></div></div></section>
 
       <section id="lavori" className="relative z-10 min-h-screen overflow-hidden bg-ink px-5 py-14 md:px-12 md:py-16 lg:px-20">
         <FloatingClapper className="slow-drift pointer-events-none absolute right-16 top-20 hidden h-20 w-24 text-paper/10 lg:block" />
-        <FloatingSquiggle wild className="pointer-events-none absolute inset-0 hidden h-full w-full lg:block" style={{ opacity: 0.5 }} />
+        <FloatingSquiggle wild className="pointer-events-none absolute inset-0 h-full w-full opacity-35 lg:opacity-50" />
         <p className="font-display text-sm uppercase text-hot">02 / Lavori</p>
         <h2 className="mt-3 max-w-4xl font-display text-5xl font-bold uppercase leading-none xl:text-7xl">Quello<br/>sono io!</h2>
         {/* max-w-[19rem] solo su telefono: la pellicola ("rullino") che scende dalla bobina arriva fin lì
@@ -242,7 +271,10 @@ function Index() {
               larghezza disponibile ad ogni breakpoint, restando sempre nel budget verticale della sezione.
               La colonna foto a destra (nessuna altezza propria) si allunga per combaciare in automatico. */}
           <div className="relative aspect-video w-full overflow-hidden border border-ink/20 bg-ink md:col-span-2">
-            <video controls preload="metadata" className="h-full w-full object-cover">
+            {/* poster: fotogramma reale del video (un frame estratto a video avviato, non il fermo immagine
+                nero di partenza che il browser mostra prima di aver caricato dati reali) — così si vede
+                subito di cosa si tratta anche senza cliccare play, invece di una chiazza nera. */}
+            <video controls preload="metadata" poster="/media/reel-lorenzo-poster.jpg" className="h-full w-full object-cover">
               <source src="/media/reel-lorenzo.mp4" type="video/mp4" />
             </video>
           </div>
@@ -259,14 +291,10 @@ function Index() {
         <Link to="/galleria" className="mt-4 inline-flex items-center justify-center gap-2 rounded-none bg-ink px-6 py-3 font-display uppercase text-paper transition-colors hover:bg-hot">Vedi tutte le foto <ArrowUpRight /></Link>
       </section>
 
-      <section id="press" className="relative z-10 min-h-screen overflow-hidden bg-signal px-5 py-14 text-paper md:px-12 md:py-16 lg:px-20"><Drama strokeWidth={1.5} className="slow-drift pointer-events-none absolute right-16 top-20 hidden h-20 w-20 text-paper/15 lg:block" /><FloatingSquiggle solidColor="var(--paper)" dashColor="var(--ink)" className="pointer-events-none absolute inset-0 hidden h-full w-full lg:block" style={{ opacity: 0.5 }} /><p className="font-display text-sm uppercase">04 / Parlano di me</p><h2 className="mt-3 max-w-4xl font-display text-4xl font-bold uppercase leading-none sm:text-5xl xl:text-8xl">La rassegna stampa…</h2><div className="mt-8 grid gap-px bg-paper/30 md:grid-cols-3">{[
-          { outlet: "L'Eco di Bergamo", date: "24 set 2026", title: "«Cosa desideri?» — A Cassano la musica incontra il teatro", href: "/media/press-cosa-desideri-eco-bergamo.pdf" },
-          { outlet: "Milano Etno TV", date: "11 set 2026", title: "Teatro Utile: laboratorio su clima e migrazioni in scena a Milano", href: "https://www.milanoetnotv.it/2026/09/11/teatro-utile-i-lavori-del-laboratorio-su-clima-e-migrazioni-in-scena-a-milano/" },
-          { outlet: "Slow Mill", date: "9 apr 2026", title: "Brasserie, di Koffi Kwahulé — regia di Tiziana Bergamaschi", href: "https://www.slowmill.it/evento/brasserie-spettacolo-teatrale-2/" },
-        ].map((a,i)=><a key={a.title} href={a.href} target="_blank" rel="noreferrer" className={`group block min-h-56 p-7 transition-colors hover:bg-paper hover:text-ink ${i % 2 === 0 ? "bg-ink" : "bg-signal"}`}><span className="text-xs uppercase text-paper/70 group-hover:text-ink/70">{a.outlet} · {a.date}</span><h3 className="mt-10 font-display text-3xl leading-tight">{a.title}</h3><span className="mt-4 inline-flex items-center gap-2 text-paper/75 group-hover:text-ink">Leggi <ArrowUpRight className="h-4 w-4"/></span></a>)}</div><Link to="/news" className="mt-6 inline-flex items-center gap-2 rounded-none bg-paper px-6 py-3 font-display uppercase text-ink transition-colors hover:bg-ink hover:text-paper">Vedi di più news <ArrowUpRight/></Link></section>
+      <section id="press" className="relative z-10 min-h-screen overflow-hidden bg-signal px-5 py-14 text-paper md:px-12 md:py-16 lg:px-20"><Drama strokeWidth={1.5} className="slow-drift pointer-events-none absolute right-16 top-20 hidden h-20 w-20 text-paper/15 lg:block" /><FloatingSquiggle solidColor="var(--paper)" dashColor="var(--ink)" className="pointer-events-none absolute inset-0 h-full w-full opacity-35 lg:opacity-50" /><p className="font-display text-sm uppercase">04 / Parlano di me</p><h2 className="mt-3 max-w-4xl font-display text-4xl font-bold uppercase leading-none sm:text-5xl xl:text-8xl">La rassegna stampa…</h2><div className="mt-8 grid gap-px bg-paper/30 md:grid-cols-3">{press.map((a,i)=><a key={a.title} href={a.href} target="_blank" rel="noreferrer" className={`group block min-h-56 p-7 transition-colors hover:bg-paper hover:text-ink ${i % 2 === 0 ? "bg-ink" : "bg-signal"}`}><span className="text-xs uppercase text-paper/70 group-hover:text-ink/70">{a.outlet} · {a.date}</span><h3 className="mt-10 font-display text-3xl leading-tight">{a.title}</h3><span className="mt-4 inline-flex items-center gap-2 text-paper/75 group-hover:text-ink">Leggi <ArrowUpRight className="h-4 w-4"/></span></a>)}</div><Link to="/news" className="mt-6 inline-flex items-center gap-2 rounded-none bg-paper px-6 py-3 font-display uppercase text-ink transition-colors hover:bg-ink hover:text-paper">Vedi di più news <ArrowUpRight/></Link></section>
 
       <footer id="contatti" className="relative z-10 min-h-screen overflow-hidden bg-ink px-5 py-14 md:px-12 md:py-16 lg:px-20">
-        <FloatingSquiggle solidColor="var(--hot)" dashColor="var(--paper)" wild className="pointer-events-none absolute inset-0 hidden h-full w-full lg:block" style={{ opacity: 0.5 }} />
+        <FloatingSquiggle solidColor="var(--hot)" dashColor="var(--paper)" wild className="pointer-events-none absolute inset-0 h-full w-full opacity-35 lg:opacity-50" />
         <p className="font-display text-sm uppercase text-hot">05 / Contatti</p>
         <h2 className="mt-3 max-w-5xl font-display text-[clamp(2.25rem,9vw,7rem)] font-bold uppercase leading-[.82]">Facciamo<br/><span className="text-hot">qualcosa.</span></h2>
         {/* max-w-[11rem] solo su telefono: a quella larghezza il testo non entra mai nella zona che la

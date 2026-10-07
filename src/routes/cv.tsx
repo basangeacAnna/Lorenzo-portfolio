@@ -23,8 +23,12 @@ function CvPage() {
       <Link to="/" hash="bio" className="inline-flex items-center gap-2 font-display text-xs uppercase text-hot sm:text-sm">
         <ArrowLeft className="h-4 w-4" /> <span className="sm:hidden">Portfolio</span><span className="hidden sm:inline">Torna al portfolio</span>
       </Link>
-      <h1 className="mt-8 font-display text-4xl font-bold uppercase leading-none sm:text-6xl md:text-8xl">
-        <span className="block sm:inline">Curricu</span><span className="block sm:inline">lum.</span>
+      {/* Prima andava a capo su telefono ("Curricu-lum.") per non finire sotto la bobina: visivamente
+          brutto. Ora resta su una riga anche su telefono, con una dimensione legata alla larghezza schermo
+          (7vw) invece che fissa — si rimpicciolisce da sola sugli schermi più stretti restando sempre a
+          sinistra della bobina, senza bisogno di indovinare un valore fisso per ogni larghezza possibile. */}
+      <h1 className="mt-8 whitespace-nowrap font-display text-[7vw] font-bold uppercase leading-none sm:whitespace-normal sm:text-6xl md:text-8xl">
+        Curriculum.
       </h1>
       <img
         src="/media/cv-lorenzo-blacona.png"
