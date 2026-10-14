@@ -31,7 +31,7 @@ function CvPage() {
         Curriculum.
       </h1>
       <img
-        src="/media/cv-lorenzo-blacona.png"
+        src="/media/cv-lorenzo-blacona.webp"
         alt="Curriculum di Lorenzo Blaconà"
         className="mx-auto mt-10 w-full max-w-3xl border border-paper/20"
       />

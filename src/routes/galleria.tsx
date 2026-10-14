@@ -19,11 +19,21 @@ export const Route = createFileRoute("/galleria")({
 // prima volta, invece della solita griglia uniforme.
 const eventi: { titolo: string; foto: { label: string; src: string; pos?: "top" }[] }[] = [
   {
+    // Spettacolo più recente in ordine cronologico (dopo quello di Teatro Utile 2026 qui sotto): per
+    // questo va per primo, stessa logica "più recente in cima" già usata per le altre categorie eventi.
+    titolo: "Cosa desideri? Al TeCa",
+    foto: [
+      { label: "Mezzo busto", src: "/media/cosa-desideri-mezzo-busto.webp" },
+      { label: "Dialogo in scena", src: "/media/cosa-desideri-dialogo.webp" },
+      { label: "Sul palco con la band", src: "/media/cosa-desideri-canzone.webp" },
+    ],
+  },
+  {
     titolo: "Teatro Filodrammatici 2026",
     foto: [
-      { label: "In scena con l'altro attore", src: "/media/teatro-dialogo-proiezione-01.jpg" },
-      { label: "Monologo", src: "/media/teatro-monologo-buio-01.jpg" },
-      { label: "Applausi finali", src: "/media/teatro-applausi-finali-01.jpg" },
+      { label: "In scena con l'altro attore", src: "/media/teatro-dialogo-proiezione-01.webp" },
+      { label: "Monologo", src: "/media/teatro-monologo-buio-01.webp" },
+      { label: "Applausi finali", src: "/media/teatro-applausi-finali-01.webp" },
     ],
   },
   {
@@ -38,17 +48,17 @@ const eventi: { titolo: string; foto: { label: string; src: string; pos?: "top" 
     // sotto hanno il soggetto in basso, "top" le romperebbe allo stesso modo all'opposto) — per questo il
     // posizionamento del ritaglio è per-foto, non una regola unica per tutta la griglia.
     foto: [
-      { label: "Primo piano", src: "/media/teatro-monologo-primo-piano-01.jpg", pos: "top" },
-      { label: "Mezza figura", src: "/media/teatro-monologo-mezza-figura-02.jpg", pos: "top" },
-      { label: "Figura intera", src: "/media/teatro-monologo-figura-intera-04.jpg", pos: "top" },
+      { label: "Primo piano", src: "/media/teatro-monologo-primo-piano-01.webp", pos: "top" },
+      { label: "Mezza figura", src: "/media/teatro-monologo-mezza-figura-02.webp", pos: "top" },
+      { label: "Figura intera", src: "/media/teatro-monologo-figura-intera-04.webp", pos: "top" },
     ],
   },
   {
     titolo: "Concerto per la prevenzione",
     foto: [
-      { label: "Voce e microfono", src: "/media/concerto-voce-microfono-02.jpg" },
-      { label: "Voce e microfono", src: "/media/concerto-voce-microfono-03.jpg" },
-      { label: "Voce e microfono", src: "/media/concerto-voce-microfono-04.png" },
+      { label: "Voce e microfono", src: "/media/concerto-voce-microfono-02.webp" },
+      { label: "Voce e microfono", src: "/media/concerto-voce-microfono-03.webp" },
+      { label: "Voce e microfono", src: "/media/concerto-voce-microfono-04.webp" },
     ],
   },
 ];
@@ -58,11 +68,11 @@ const eventi: { titolo: string; foto: { label: string; src: string; pos?: "top" 
 // forzato come nella griglia eventi, si vedono intere alla loro proporzione originale, affiancate "a mo di
 // collage" ma ordinate (niente rotazioni come nel collage "Lorenzo" qui sotto), sempre centrate.
 const bookDaAttore = [
-  { label: "Primo piano, barba", src: "/media/book-primo-piano-barba.jpg" },
-  { label: "Primo piano, ragazzo", src: "/media/book-primo-piano-ragazzo.jpg" },
-  { label: "Figura intera, ragazzo", src: "/media/book-figura-intera-ragazzo.jpg" },
-  { label: "Figura intera, camicia casual", src: "/media/catalogo-casual-camicia-quadri.jpg" },
-  { label: "Mezzo busto, barba", src: "/media/book-mezzo-busto-barba.jpg" },
+  { label: "Primo piano, barba", src: "/media/book-primo-piano-barba.webp" },
+  { label: "Primo piano, ragazzo", src: "/media/book-primo-piano-ragazzo.webp" },
+  { label: "Figura intera, ragazzo", src: "/media/book-figura-intera-ragazzo.webp" },
+  { label: "Figura intera, camicia casual", src: "/media/catalogo-casual-camicia-quadri.webp" },
+  { label: "Mezzo busto, barba", src: "/media/book-mezzo-busto-barba.webp" },
 ];
 
 // Galleria personale: un set più ampio e vario (studio, editoriale, red carpet, primi piani, mezzi busti)
@@ -74,13 +84,13 @@ const bookDaAttore = [
 // vero e proprio — nessuna sostituzione, non ne serve una seconda). "Casual sorriso" e l'ultima foto
 // sostituite con altre due mai usate altrove sul sito.
 const personali = [
-  { label: "Red carpet", src: "/media/red-carpet-milano-film-fest.jpg" },
-  { label: "Editoriale notturno", src: "/media/editoriale-luce-blu-notturno.jpg" },
-  { label: "Primo piano, muro", src: "/media/editoriale-primo-piano-muro-03.jpg" },
-  { label: "Backstage luna park", src: "/media/backstage-luna-park-01.jpg" },
-  { label: "Ritratto studio", src: "/media/ritratto-studio-giacca-occhiali.jpg" },
-  { label: "Editoriale, profilo città", src: "/media/editoriale-profilo-citta-04.jpg" },
-  { label: "Dialogo, cortometraggio", src: "/media/cortometraggio-dialogo-occhiali.png" },
+  { label: "Red carpet", src: "/media/red-carpet-milano-film-fest.webp" },
+  { label: "Editoriale notturno", src: "/media/editoriale-luce-blu-notturno.webp" },
+  { label: "Primo piano, muro", src: "/media/editoriale-primo-piano-muro-03.webp" },
+  { label: "Backstage luna park", src: "/media/backstage-luna-park-01.webp" },
+  { label: "Ritratto studio", src: "/media/ritratto-studio-giacca-occhiali.webp" },
+  { label: "Editoriale, profilo città", src: "/media/editoriale-profilo-citta-04.webp" },
+  { label: "Dialogo, cortometraggio", src: "/media/cortometraggio-dialogo-occhiali.webp" },
 ];
 
 // "Lorenzo" per primo, poi gli eventi, poi il book (stesso ordine della pagina): l'indice nel Lightbox

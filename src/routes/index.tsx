@@ -19,16 +19,16 @@ const FALLBACK_PRESS = [
 // chi apre il sito — un momento di scena dal vivo + un primo piano normale. La seconda era
 // "teatro-monologo-mezza-figura-02", ora esclusiva della categoria "Teatro Filodrammatici 2025" in
 // Galleria: sostituita qui con un'altra foto della stessa serie "buio" (non riservata al 2025).
-const teaserPhotos: [string, string] = ["/media/teatro-applausi-finali-02.jpg", "/media/teatro-monologo-buio-02.jpg"];
+const teaserPhotos: [string, string] = ["/media/teatro-applausi-finali-02.webp", "/media/teatro-monologo-buio-02.webp"];
 
 // Lavori in evidenza: titoli, link YouTube e miniature reali forniti dal cliente.
 const works = [
   // Link e titoli reali confermati dal cliente (verificati via oEmbed YouTube); le miniature sono
   // fermi immagine reali dei video stessi, forniti dal cliente.
-  { title: "Shablo, Guè, Joshua – La Mia Parola (Sanremo 2025) ft. Tormento", href: "https://youtu.be/70vcIH3-4lU", img: "/media/lavoro-shablo-gue-joshua.png" },
-  { title: "Costa Crociere – The Sound of Wonder (Sanremo 2024)", href: "https://youtu.be/Mh8_5D34tMo", img: "/media/lavoro-costa-crociere.png" },
-  { title: "A Gift From God – Trailer ufficiale del film", href: "https://www.youtube.com/watch?v=fsx8_UggpkE", img: "/media/lavoro-gift-from-god.png" },
-  { title: "Monge – \"Che poesia\", spot Natale 2025", href: "https://www.youtube.com/watch?v=D9n7UrZcv7s", img: "/media/lavoro-monge-natale.png" },
+  { title: "Shablo, Guè, Joshua – La Mia Parola (Sanremo 2025) ft. Tormento", href: "https://youtu.be/70vcIH3-4lU", img: "/media/lavoro-shablo-gue-joshua.webp" },
+  { title: "Costa Crociere – The Sound of Wonder (Sanremo 2024)", href: "https://youtu.be/Mh8_5D34tMo", img: "/media/lavoro-costa-crociere.webp" },
+  { title: "A Gift From God – Trailer ufficiale del film", href: "https://www.youtube.com/watch?v=fsx8_UggpkE", img: "/media/lavoro-gift-from-god.webp" },
+  { title: "Monge – \"Che poesia\", spot Natale 2025", href: "https://www.youtube.com/watch?v=D9n7UrZcv7s", img: "/media/lavoro-monge-natale.webp" },
 ];
 
 export const Route = createFileRoute("/")({
@@ -184,7 +184,7 @@ function Index() {
     <main className="relative bg-background text-foreground">
       <ReelNav active={active} />
       {bioLightbox && (
-        <Lightbox photos={["/media/ritratto-studio-giacca-occhiali.jpg"]} index={0} onClose={() => setBioLightbox(false)} onNavigate={() => {}} />
+        <Lightbox photos={["/media/ritratto-studio-giacca-occhiali.webp"]} index={0} onClose={() => setBioLightbox(false)} onNavigate={() => {}} />
       )}
       {teaserLightbox !== null && (
         <Lightbox photos={teaserPhotos} index={teaserLightbox} onClose={() => setTeaserLightbox(null)} onNavigate={setTeaserLightbox} />
@@ -224,11 +224,11 @@ function Index() {
             posizionamento assoluto su 75vh, che presume lo spazio affiancato del layout a due colonne da md
             in su) — un riquadro in-flow nello spazio libero sotto al testo, stessa rotazione/bordo "storto"
             della versione desktop. */}
-        <div className="relative z-10 ml-auto mt-8 aspect-[4/5] w-56 overflow-hidden rotate-2 border-2 border-hot bg-muted sm:w-64 md:hidden"><img src="/media/editoriale-scivolo-dallalto-02.jpg" alt="Lorenzo Blaconà" className="h-full w-full object-cover" /></div>
-        <div className="relative hidden h-[75vh] md:block"><div className="absolute inset-10 right-20 overflow-hidden rotate-2 border-2 border-hot bg-muted"><img src="/media/editoriale-scivolo-dallalto-02.jpg" alt="Lorenzo Blaconà" className="h-full w-full object-cover" /></div></div>
+        <div className="relative z-10 ml-auto mt-8 aspect-[4/5] w-56 overflow-hidden rotate-2 border-2 border-hot bg-muted sm:w-64 md:hidden"><img src="/media/editoriale-scivolo-dallalto-02.webp" alt="Lorenzo Blaconà" className="h-full w-full object-cover" /></div>
+        <div className="relative hidden h-[75vh] md:block"><div className="absolute inset-10 right-20 overflow-hidden rotate-2 border-2 border-hot bg-muted"><img src="/media/editoriale-scivolo-dallalto-02.webp" alt="Lorenzo Blaconà" className="h-full w-full object-cover" /></div></div>
       </section>
 
-      <section id="bio" className="relative z-10 flex min-h-screen items-center overflow-hidden bg-paper px-5 py-14 text-ink md:px-12 md:py-16 lg:px-20"><FloatingMic className="slow-drift pointer-events-none absolute right-16 top-16 hidden h-24 w-16 text-ink/10 lg:block" /><FloatingSquiggle solidColor="var(--ink)" dashColor="var(--hot)" className="pointer-events-none absolute inset-0 h-full w-full opacity-35 lg:opacity-50" /><div className="grid w-full max-w-6xl gap-10 md:grid-cols-[.8fr_1.2fr]"><PhotoFrame label="Ritratto" src="/media/ritratto-studio-giacca-occhiali.jpg" tall onOpen={() => setBioLightbox(true)} /><div className="md:pt-14"><p className="font-display text-sm uppercase text-hot">01 / Bio</p><h2 className="mt-3 max-w-lg font-display text-4xl font-bold uppercase leading-[1.05] sm:text-5xl md:text-6xl xl:text-7xl">Dal palco alla platea, sempre con un'idea.</h2><p className="mt-6 max-w-xl text-lg leading-relaxed">Lorenzo Blaconà attraversa linguaggi e discipline con uno sguardo personale: recitazione, voce, scrittura e progetto grafico diventano parti della stessa ricerca artistica. Una biografia in movimento, costruita tra scena, ascolto e immaginazione.</p><Link to="/cv" className="mt-6 inline-flex items-center gap-2 rounded-none bg-ink px-7 py-6 font-display uppercase text-paper transition-colors hover:bg-hot">Vedi di più CV <ArrowUpRight/></Link></div></div></section>
+      <section id="bio" className="relative z-10 flex min-h-screen items-center overflow-hidden bg-paper px-5 py-14 text-ink md:px-12 md:py-16 lg:px-20"><FloatingMic className="slow-drift pointer-events-none absolute right-16 top-16 hidden h-24 w-16 text-ink/10 lg:block" /><FloatingSquiggle solidColor="var(--ink)" dashColor="var(--hot)" className="pointer-events-none absolute inset-0 h-full w-full opacity-35 lg:opacity-50" /><div className="grid w-full max-w-6xl gap-10 md:grid-cols-[.8fr_1.2fr]"><PhotoFrame label="Ritratto" src="/media/ritratto-studio-giacca-occhiali.webp" tall onOpen={() => setBioLightbox(true)} /><div className="md:pt-14"><p className="font-display text-sm uppercase text-hot">01 / Bio</p><h2 className="mt-3 max-w-lg font-display text-4xl font-bold uppercase leading-[1.05] sm:text-5xl md:text-6xl xl:text-7xl">Dal palco alla platea, sempre con un'idea.</h2><p className="mt-6 max-w-xl text-lg leading-relaxed">Lorenzo Blaconà attraversa linguaggi e discipline con uno sguardo personale: recitazione, voce, scrittura e progetto grafico diventano parti della stessa ricerca artistica. Una biografia in movimento, costruita tra scena, ascolto e immaginazione.</p><Link to="/cv" className="mt-6 inline-flex items-center gap-2 rounded-none bg-ink px-7 py-6 font-display uppercase text-paper transition-colors hover:bg-hot">Vedi di più CV <ArrowUpRight/></Link></div></div></section>
 
       <section id="lavori" className="relative z-10 min-h-screen overflow-hidden bg-ink px-5 py-14 md:px-12 md:py-16 lg:px-20">
         <FloatingClapper className="slow-drift pointer-events-none absolute right-16 top-20 hidden h-20 w-24 text-paper/10 lg:block" />
@@ -271,12 +271,17 @@ function Index() {
               larghezza disponibile ad ogni breakpoint, restando sempre nel budget verticale della sezione.
               La colonna foto a destra (nessuna altezza propria) si allunga per combaciare in automatico. */}
           <div className="relative aspect-video w-full overflow-hidden border border-ink/20 bg-ink md:col-span-2">
-            {/* poster: fotogramma reale del video (un frame estratto a video avviato, non il fermo immagine
-                nero di partenza che il browser mostra prima di aver caricato dati reali) — così si vede
-                subito di cosa si tratta anche senza cliccare play, invece di una chiazza nera. */}
-            <video controls preload="metadata" poster="/media/reel-lorenzo-poster.jpg" className="h-full w-full object-cover">
-              <source src="/media/reel-lorenzo.mp4" type="video/mp4" />
-            </video>
+            {/* Prima era il file .mp4 caricato in locale (71MB, scaricato per intero da ogni visitatore):
+                stesso video, ora ospitato su YouTube — copertina, buffering e qualità adattiva li gestisce
+                YouTube stesso, zero peso sul sito. */}
+            <iframe
+              src="https://www.youtube.com/embed/UwuI0ehyFC0"
+              title="Reel Lorenzo Blaconà"
+              className="h-full w-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              loading="lazy"
+            />
           </div>
           {/* min-h-[28rem] md:min-h-0: sotto "md" questa colonna non condivide più riga con il video (la
               griglia diventa a colonna unica), quindi non ha più un'altezza "presa in prestito" da lui —
