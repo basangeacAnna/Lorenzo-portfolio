@@ -1,17 +1,44 @@
 import { createServerFn } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
 
 // Invio reale (lato server) dell'email del form "Scrivimi", via Resend — sostituisce il vecchio
 // mailto: (che apriva solo il client di posta del visitatore, lasciandogli l'ultimo passo manuale).
-// RESEND_API_KEY è un secret di Cloudflare Workers: in produzione arriva tramite il binding "env" che
-// Nitro espone su globalThis.__env__ (vedi i runtime file di nitro/presets/cloudflare) — non è mai nel
-// codice né nel repository. Il fallback a process.env serve solo per un'eventuale esecuzione Node locale
-// (es. test manuali), non per il normale "npm run dev" di Vite.
+// RESEND_API_KEY è un secret di Cloudflare Workers: non è mai nel codice né nel repository. Tre modi di
+// leggerlo, dal più affidabile al meno: (1) Nitro attacca il binding "env" di Cloudflare direttamente
+// sulla Request (request.runtime.cloudflare.env, vedi augmentReq in
+// nitro/presets/cloudflare/runtime/_module-handler.mjs) — getRequest() di TanStack Start restituisce
+// quella stessa Request; (2) globalThis.__env__, che Nitro imposta ad ogni richiesta ma che un primo
+// tentativo ha mostrato non arrivare fino al corpo della server function (probabilmente per via di come
+// TanStack Start isola l'esecuzione); (3) process.env, utile solo per un'eventuale esecuzione Node pura.
 declare global {
   var __env__: Record<string, string | undefined> | undefined;
 }
 
 function getResendApiKey(): string | undefined {
-  return globalThis.__env__?.["RESEND_API_KEY"] ?? process.env["RESEND_API_KEY"];
+  try {
+    const request = getRequest() as Request & {
+      runtime?: { cloudflare?: { env?: Record<string, string | undefined> } };
+    };
+    const fromRequest = request.runtime?.cloudflare?.env?.["RESEND_API_KEY"];
+    if (fromRequest) {
+      console.log("[send-contact-email] chiave trovata via request.runtime.cloudflare.env");
+      return fromRequest;
+    }
+  } catch (err) {
+    console.log("[send-contact-email] getRequest() ha lanciato:", err instanceof Error ? err.message : String(err));
+  }
+  const fromGlobal = globalThis.__env__?.["RESEND_API_KEY"];
+  if (fromGlobal) {
+    console.log("[send-contact-email] chiave trovata via globalThis.__env__");
+    return fromGlobal;
+  }
+  const fromProcess = process.env["RESEND_API_KEY"];
+  if (fromProcess) {
+    console.log("[send-contact-email] chiave trovata via process.env");
+    return fromProcess;
+  }
+  console.log("[send-contact-email] chiave non trovata in nessuna delle 3 fonti");
+  return undefined;
 }
 
 export type ContactFormData = {
