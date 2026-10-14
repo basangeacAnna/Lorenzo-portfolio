@@ -17,8 +17,9 @@ const tipi = ["Proposta di lavoro", "Collaborazione artistica", "Richiesta stamp
 // Niente backend/API key configurata: il form prepara oggetto e corpo del messaggio e apre il client di
 // posta dell'utente già compilato su loryblacona@gmail.com — "parte in automatico" nel senso che non deve
 // scrivere nulla a mano, l'unico passaggio che resta è il click su "invia" nella propria app di posta.
-function buildMailto(data: { nome: string; email: string; tipo: string; produzione: string; messaggio: string }) {
-  const subject = `[${data.tipo}] da ${data.nome || "sito web"}`;
+function buildMailto(data: { nome: string; email: string; tipo: string; tipoAltro: string; produzione: string; messaggio: string }) {
+  const tipoLabel = data.tipo === "Altro" && data.tipoAltro.trim() ? data.tipoAltro.trim() : data.tipo;
+  const subject = `[${tipoLabel}] da ${data.nome || "sito web"}`;
   const bodyLines = [
     `Nome: ${data.nome}`,
     `Email: ${data.email}`,
@@ -30,7 +31,8 @@ function buildMailto(data: { nome: string; email: string; tipo: string; produzio
 }
 
 function ScrivimiPage() {
-  const [form, setForm] = useState({ nome: "", email: "", tipo: tipi[0] as string, produzione: "", messaggio: "" });
+  const [form, setForm] = useState({ nome: "", email: "", tipo: tipi[0] as string, tipoAltro: "", produzione: "", messaggio: "" });
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
 
   return (
     <main className="relative min-h-screen bg-ink px-5 pb-20 pt-28 text-paper sm:pt-16 md:px-12 lg:px-20">
@@ -93,6 +95,21 @@ function ScrivimiPage() {
           </select>
         </label>
 
+        {/* Compare solo scegliendo "Altro": chiede di specificare a mano di che richiesta si tratta,
+            invece di lasciare "Altro" generico nell'oggetto/corpo dell'email. */}
+        {form.tipo === "Altro" && (
+          <label className="block">
+            <span className="text-xs uppercase text-paper/50">Specifica il tipo di richiesta</span>
+            <input
+              required
+              value={form.tipoAltro}
+              onChange={(e) => setForm((f) => ({ ...f, tipoAltro: e.target.value }))}
+              className="mt-2 w-full border border-paper/30 bg-transparent px-4 py-3 text-paper outline-none focus:border-hot"
+              placeholder="Di che tipo di richiesta si tratta?"
+            />
+          </label>
+        )}
+
         <label className="block">
           <span className="text-xs uppercase text-paper/50">Produzione / Agenzia (opzionale)</span>
           <input
@@ -113,6 +130,26 @@ function ScrivimiPage() {
             className="mt-2 w-full resize-none border border-paper/30 bg-transparent px-4 py-3 text-paper outline-none focus:border-hot"
             placeholder="Racconta brevemente la proposta..."
           />
+        </label>
+
+        {/* Checkbox di consenso GDPR: niente preselezione (deve essere un'azione attiva di chi compila),
+            collegata alla pagina /privacy. Il form non parte finché non è spuntata (required nativo del
+            browser, stessa validazione già usata su nome/email/messaggio). */}
+        <label className="flex items-start gap-3 text-sm text-paper/80">
+          <input
+            type="checkbox"
+            required
+            checked={privacyAccepted}
+            onChange={(e) => setPrivacyAccepted(e.target.checked)}
+            className="mt-1 h-4 w-4 shrink-0 accent-hot"
+          />
+          <span>
+            Ho letto e accetto la{" "}
+            <Link to="/privacy" target="_blank" className="text-hot underline underline-offset-2 hover:opacity-80">
+              Privacy Policy
+            </Link>
+            .
+          </span>
         </label>
 
         <button
