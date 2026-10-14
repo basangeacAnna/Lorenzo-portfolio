@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowUpRight, Send } from "lucide-react";
 import { useState } from "react";
 import { ReelNav, ids } from "@/components/reel-nav";
 import { SiteFooter } from "@/components/site-footer";
+import { sendContactEmail } from "@/lib/send-contact-email";
 
 export const Route = createFileRoute("/scrivimi")({
   head: () => ({ meta: [
@@ -14,25 +15,10 @@ export const Route = createFileRoute("/scrivimi")({
 
 const tipi = ["Proposta di lavoro", "Collaborazione artistica", "Richiesta stampa", "Altro"];
 
-// Niente backend/API key configurata: il form prepara oggetto e corpo del messaggio e apre il client di
-// posta dell'utente già compilato su loryblacona@gmail.com — "parte in automatico" nel senso che non deve
-// scrivere nulla a mano, l'unico passaggio che resta è il click su "invia" nella propria app di posta.
-function buildMailto(data: { nome: string; email: string; tipo: string; tipoAltro: string; produzione: string; messaggio: string }) {
-  const tipoLabel = data.tipo === "Altro" && data.tipoAltro.trim() ? data.tipoAltro.trim() : data.tipo;
-  const subject = `[${tipoLabel}] da ${data.nome || "sito web"}`;
-  const bodyLines = [
-    `Nome: ${data.nome}`,
-    `Email: ${data.email}`,
-    data.produzione ? `Produzione / Agenzia: ${data.produzione}` : null,
-    "",
-    data.messaggio,
-  ].filter((l) => l !== null);
-  return `mailto:loryblacona@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join("\n"))}`;
-}
-
 function ScrivimiPage() {
   const [form, setForm] = useState({ nome: "", email: "", tipo: tipi[0] as string, tipoAltro: "", produzione: "", messaggio: "" });
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
   return (
     <main className="relative min-h-screen bg-ink px-5 pb-20 pt-28 text-paper sm:pt-16 md:px-12 lg:px-20">
@@ -50,14 +36,34 @@ function ScrivimiPage() {
         Scrivimi.
       </h1>
       <p className="mt-5 max-w-xl text-lg text-paper/80">
-        Compila il form: si apre già tutto pronto nella tua email, un click e parte.
+        Compila il form: parte in automatico, un click e basta.
       </p>
 
+      {status === "sent" ? (
+        <div className="mt-12 max-w-2xl border border-hot bg-hot/10 p-7">
+          <p className="font-display text-2xl uppercase text-hot">Messaggio inviato!</p>
+          <p className="mt-3 text-paper/80">Grazie, Lorenzo ti risponderà il prima possibile.</p>
+        </div>
+      ) : (
       <form
         className="mt-12 grid max-w-2xl gap-6"
         onSubmit={(e) => {
           e.preventDefault();
-          window.location.href = buildMailto(form);
+          setStatus("sending");
+          sendContactEmail({
+            data: {
+              nome: form.nome,
+              email: form.email,
+              tipo: form.tipo === "Altro" && form.tipoAltro.trim() ? form.tipoAltro.trim() : form.tipo,
+              produzione: form.produzione,
+              messaggio: form.messaggio,
+            },
+          })
+            .then(() => setStatus("sent"))
+            .catch((err) => {
+              console.error(err);
+              setStatus("error");
+            });
         }}
       >
         <div className="grid gap-6 sm:grid-cols-2">
@@ -152,13 +158,22 @@ function ScrivimiPage() {
           </span>
         </label>
 
+        {status === "error" && (
+          <p className="text-sm text-hot">
+            Qualcosa è andato storto nell'invio. Riprova, oppure scrivi direttamente a{" "}
+            <a href="mailto:loryblacona@gmail.com" className="underline underline-offset-2">loryblacona@gmail.com</a>.
+          </p>
+        )}
+
         <button
           type="submit"
-          className="mt-2 inline-flex w-fit items-center gap-2 rounded-none bg-hot px-7 py-4 font-display uppercase text-ink transition-colors hover:bg-paper"
+          disabled={status === "sending"}
+          className="mt-2 inline-flex w-fit items-center gap-2 rounded-none bg-hot px-7 py-4 font-display uppercase text-ink transition-colors hover:bg-paper disabled:opacity-50"
         >
-          Invia <Send className="h-4 w-4" />
+          {status === "sending" ? "Invio in corso..." : "Invia"} <Send className="h-4 w-4" />
         </button>
       </form>
+      )}
 
       <a href="mailto:loryblacona@gmail.com" className="mt-10 inline-flex items-center gap-2 font-display text-sm uppercase text-paper/60 hover:text-hot">
         oppure scrivi direttamente a loryblacona@gmail.com <ArrowUpRight className="h-4 w-4" />
