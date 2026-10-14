@@ -275,7 +275,7 @@ function Index() {
                 stesso video, ora ospitato su YouTube — copertina, buffering e qualità adattiva li gestisce
                 YouTube stesso, zero peso sul sito. */}
             <iframe
-              src="https://www.youtube.com/embed/UwuI0ehyFC0"
+              src="https://www.youtube-nocookie.com/embed/UwuI0ehyFC0"
               title="Reel Lorenzo Blaconà"
               className="h-full w-full"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -311,6 +311,7 @@ function Index() {
         <div className="mt-10 grid gap-8 border-t border-border pt-6 md:grid-cols-3"><div><span className="text-xs uppercase text-muted-foreground">Email</span><a href="mailto:loryblacona@gmail.com" className="mt-3 flex items-center gap-2 text-lg"> <Mail className="h-5 w-5 text-hot"/> loryblacona@gmail.com</a></div><div><span className="text-xs uppercase text-muted-foreground">Agenzia · Wariboko</span><a href="mailto:Charity.dago@wariboko.eu" className="mt-3 flex items-center gap-2 text-lg"><Mail className="h-5 w-5 text-hot"/> Charity.dago@wariboko.eu</a></div><div><span className="text-xs uppercase text-muted-foreground">Social</span><a href="https://instagram.com/dets.lore" target="_blank" rel="noreferrer" className="mt-3 flex items-center gap-2 text-lg"><Instagram className="h-5 w-5 text-hot"/> @dets.lore</a></div></div>
         <p className="mt-14 text-xs uppercase text-muted-foreground">© 2026 Lorenzo Blaconà — Tutti i diritti riservati</p>
         <p className="mt-2 text-xs uppercase text-muted-foreground">Realizzato da Anna Maria Basangeac — concept grafico con Lorenzo Blaconà</p>
+        <Link to="/privacy" className="mt-1 inline-block text-xs uppercase text-muted-foreground underline-offset-2 hover:underline">Privacy policy</Link>
       </footer>
     </main>
   );

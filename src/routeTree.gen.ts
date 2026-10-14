@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as CvRouteImport } from './routes/cv'
 import { Route as GalleriaRouteImport } from './routes/galleria'
 import { Route as NewsRouteImport } from './routes/news'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ScrivimiRouteImport } from './routes/scrivimi'
 
 const IndexRoute = IndexRouteImport.update({
@@ -35,6 +36,11 @@ const NewsRoute = NewsRouteImport.update({
   path: '/news',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ScrivimiRoute = ScrivimiRouteImport.update({
   id: '/scrivimi',
   path: '/scrivimi',
@@ -46,6 +52,7 @@ export interface FileRoutesByFullPath {
   '/cv': typeof CvRoute
   '/galleria': typeof GalleriaRoute
   '/news': typeof NewsRoute
+  '/privacy': typeof PrivacyRoute
   '/scrivimi': typeof ScrivimiRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/cv': typeof CvRoute
   '/galleria': typeof GalleriaRoute
   '/news': typeof NewsRoute
+  '/privacy': typeof PrivacyRoute
   '/scrivimi': typeof ScrivimiRoute
 }
 export interface FileRoutesById {
@@ -61,14 +69,16 @@ export interface FileRoutesById {
   '/cv': typeof CvRoute
   '/galleria': typeof GalleriaRoute
   '/news': typeof NewsRoute
+  '/privacy': typeof PrivacyRoute
   '/scrivimi': typeof ScrivimiRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/cv' | '/galleria' | '/news' | '/scrivimi'
+  fullPaths: '/' | '/cv' | '/galleria' | '/news' | '/privacy' | '/scrivimi'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cv' | '/galleria' | '/news' | '/scrivimi'
-  id: '__root__' | '/' | '/cv' | '/galleria' | '/news' | '/scrivimi'
+  to: '/' | '/cv' | '/galleria' | '/news' | '/privacy' | '/scrivimi'
+  id:
+    '__root__' | '/' | '/cv' | '/galleria' | '/news' | '/privacy' | '/scrivimi'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -76,6 +86,7 @@ export interface RootRouteChildren {
   CvRoute: typeof CvRoute
   GalleriaRoute: typeof GalleriaRoute
   NewsRoute: typeof NewsRoute
+  PrivacyRoute: typeof PrivacyRoute
   ScrivimiRoute: typeof ScrivimiRoute
 }
 
@@ -109,6 +120,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NewsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/scrivimi': {
       id: '/scrivimi'
       path: '/scrivimi'
@@ -124,6 +142,7 @@ const rootRouteChildren: RootRouteChildren = {
   CvRoute: CvRoute,
   GalleriaRoute: GalleriaRoute,
   NewsRoute: NewsRoute,
+  PrivacyRoute: PrivacyRoute,
   ScrivimiRoute: ScrivimiRoute,
 }
 export const routeTree = rootRouteImport
