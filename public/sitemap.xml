@@ -1,33 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Dominio placeholder: aggiornare tutti gli <loc> con il dominio reale appena disponibile. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://lorenzoblacona.it/</loc>
+    <loc>https://lorenzoblacona.com/</loc>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://lorenzoblacona.it/cv</loc>
+    <loc>https://lorenzoblacona.com/cv</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://lorenzoblacona.it/galleria</loc>
+    <loc>https://lorenzoblacona.com/galleria</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://lorenzoblacona.it/news</loc>
+    <loc>https://lorenzoblacona.com/news</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://lorenzoblacona.it/scrivimi</loc>
+    <loc>https://lorenzoblacona.com/scrivimi</loc>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://lorenzoblacona.it/privacy</loc>
+    <loc>https://lorenzoblacona.com/privacy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>

@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://lorenzoblacona.it/sitemap.xml
+Sitemap: https://lorenzoblacona.com/sitemap.xml

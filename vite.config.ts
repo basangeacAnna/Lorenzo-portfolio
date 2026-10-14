@@ -27,7 +27,11 @@ export default defineConfig(async ({ command }): Promise<UserConfig> => {
 
   if (command === "build") {
     const { nitro } = await import("nitro/vite");
-    plugins.push(nitro({ defaultPreset: "cloudflare-module" }));
+    // Nome del Worker fissato esplicitamente: senza questo, Nitro ne genera uno automaticamente
+    // (es. "basangeacanna-lorenzo-portfolio", dal nome utente del computer) diverso dal Worker
+    // "lorenzo-portfolio" già creato su Cloudflare — un deploy col nome sbagliato avrebbe creato un
+    // Worker NUOVO invece di aggiornare quello a cui è collegato il dominio.
+    plugins.push(nitro({ defaultPreset: "cloudflare-module", cloudflare: { wrangler: { name: "lorenzo-portfolio" } } }));
   }
 
   return {
