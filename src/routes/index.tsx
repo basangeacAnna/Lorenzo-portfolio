@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowDownRight, ArrowUpRight, Drama, Instagram, Mail, Maximize2, Play } from "lucide-react";
 import { useEffect, useState, type CSSProperties } from "react";
-import { ReelNav, sections, ids } from "@/components/reel-nav";
+import { ReelNav, ids } from "@/components/reel-nav";
 import { Lightbox } from "@/components/lightbox";
 import { getNewsFromSheet } from "@/lib/news-sheet";
 
