@@ -14,31 +14,29 @@ declare global {
   var __env__: Record<string, string | undefined> | undefined;
 }
 
-function getResendApiKey(): string | undefined {
+// Diagnostica temporanea: nessun valore di secret esposto, solo "struttura" (esiste l'oggetto? quali
+// nomi di chiave sono presenti?) — da togliere una volta trovata la causa del secret introvabile.
+function getResendApiKey(): { key: string | undefined; diag: string } {
+  const diag: string[] = [];
   try {
     const request = getRequest() as Request & {
       runtime?: { cloudflare?: { env?: Record<string, string | undefined> } };
     };
-    const fromRequest = request.runtime?.cloudflare?.env?.["RESEND_API_KEY"];
-    if (fromRequest) {
-      console.log("[send-contact-email] chiave trovata via request.runtime.cloudflare.env");
-      return fromRequest;
-    }
+    const env = request.runtime?.cloudflare?.env;
+    diag.push(`getRequest:ok runtime=${!!request.runtime} cloudflare=${!!request.runtime?.cloudflare} env=${!!env} envKeys=[${env ? Object.keys(env).join(",") : ""}]`);
+    const fromRequest = env?.["RESEND_API_KEY"];
+    if (fromRequest) return { key: fromRequest, diag: diag.join(" | ") };
   } catch (err) {
-    console.log("[send-contact-email] getRequest() ha lanciato:", err instanceof Error ? err.message : String(err));
+    diag.push(`getRequest:threw ${err instanceof Error ? err.message : String(err)}`);
   }
-  const fromGlobal = globalThis.__env__?.["RESEND_API_KEY"];
-  if (fromGlobal) {
-    console.log("[send-contact-email] chiave trovata via globalThis.__env__");
-    return fromGlobal;
-  }
+  const globalEnv = globalThis.__env__;
+  diag.push(`globalThis.__env__=${!!globalEnv} keys=[${globalEnv ? Object.keys(globalEnv).join(",") : ""}]`);
+  const fromGlobal = globalEnv?.["RESEND_API_KEY"];
+  if (fromGlobal) return { key: fromGlobal, diag: diag.join(" | ") };
   const fromProcess = process.env["RESEND_API_KEY"];
-  if (fromProcess) {
-    console.log("[send-contact-email] chiave trovata via process.env");
-    return fromProcess;
-  }
-  console.log("[send-contact-email] chiave non trovata in nessuna delle 3 fonti");
-  return undefined;
+  diag.push(`process.env has key=${!!fromProcess}`);
+  if (fromProcess) return { key: fromProcess, diag: diag.join(" | ") };
+  return { key: undefined, diag: diag.join(" | ") };
 }
 
 export type ContactFormData = {
@@ -52,9 +50,9 @@ export type ContactFormData = {
 export const sendContactEmail = createServerFn({ method: "POST" })
   .validator((data: ContactFormData) => data)
   .handler(async ({ data }) => {
-    const apiKey = getResendApiKey();
+    const { key: apiKey, diag } = getResendApiKey();
     if (!apiKey) {
-      throw new Error("Invio non configurato: manca RESEND_API_KEY.");
+      throw new Error(`Invio non configurato: manca RESEND_API_KEY. [${diag}]`);
     }
 
     const subject = `[${data.tipo}] da ${data.nome || "sito web"}`;
