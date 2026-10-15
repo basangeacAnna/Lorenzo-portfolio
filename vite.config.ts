@@ -31,7 +31,12 @@ export default defineConfig(async ({ command }): Promise<UserConfig> => {
     // (es. "basangeacanna-lorenzo-portfolio", dal nome utente del computer) diverso dal Worker
     // "lorenzo-portfolio" già creato su Cloudflare — un deploy col nome sbagliato avrebbe creato un
     // Worker NUOVO invece di aggiornare quello a cui è collegato il dominio.
-    plugins.push(nitro({ defaultPreset: "cloudflare-module", cloudflare: { wrangler: { name: "lorenzo-portfolio" } } }));
+    // observability: attivata da pannello Cloudflare; dichiarata qui per togliere l'avviso di
+    // disallineamento "Update your Wrangler configuration with these changes" nella dashboard.
+    plugins.push(nitro({
+      defaultPreset: "cloudflare-module",
+      cloudflare: { wrangler: { name: "lorenzo-portfolio", observability: { enabled: true } } },
+    }));
   }
 
   return {
@@ -54,9 +59,6 @@ export default defineConfig(async ({ command }): Promise<UserConfig> => {
     server: {
       host: "::",
       port: 8080,
-      // Permette richieste dal tunnel pubblico temporaneo (localtunnel, dominio *.loca.lt) usato per
-      // condividere il sito in anteprima — da togliere quando non serve più condividerlo così.
-      allowedHosts: [".loca.lt"],
       watch: { awaitWriteFinish: { stabilityThreshold: 1000, pollInterval: 100 } },
     },
     plugins,
