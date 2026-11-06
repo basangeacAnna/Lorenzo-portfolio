@@ -4,7 +4,7 @@ import { createServerFn } from "@tanstack/react-start";
 // per ogni nuovo articolo): il foglio deve essere condiviso come "Chiunque abbia il link - Visualizzatore"
 // (sola lettura, mai modifica) perché questa export CSV pubblica non richiede login — è l'unico modo per
 // leggerlo da un sito statico senza dover gestire credenziali Google lato server.
-const SHEET_ID = "1supJKXDxkM-ZPYCLlAXGzPs6Ux6IMM05axyoqcVmdSQ";
+export const SHEET_ID = "1supJKXDxkM-ZPYCLlAXGzPs6Ux6IMM05axyoqcVmdSQ";
 // IMPORTANTE: per NOME della scheda ("News"), non per posizione. "export?format=csv" (senza gid) prende
 // sempre la PRIMA scheda dello spreadsheet per posizione — quando è stata aggiunta una scheda di istruzioni
 // prima di "News", il sito ha iniziato a leggere quella invece dei dati veri (le news sono sparite). Questo
@@ -23,7 +23,7 @@ export type NewsItem = {
 
 // Parser CSV minimo ma corretto per i campi tra virgolette (titoli/descrizioni possono contenere virgole,
 // virgolette doppie o andare a capo): split "a mano" su virgola si romperebbe su questi casi reali.
-function parseCsv(text: string): string[][] {
+export function parseCsv(text: string): string[][] {
   const rows: string[][] = [];
   let row: string[] = [];
   let field = "";

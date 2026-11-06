@@ -58,9 +58,18 @@ export function ReelNav({ active }: { active: number }) {
   // davvero la curva, come una ruota vera che gira, non un salto in linea retta tra due punti.
   const wheelAngle = useMotionValue(active * ANGLE_STEP);
   const prevActive = useRef(active);
+  // Dopo un trascinamento la bobina è già ferma sulla sezione scelta: mentre la pagina scorre fin lì,
+  // "active" passa per le sezioni intermedie e senza questo blocco la bobina tornerebbe indietro a
+  // inseguirle una per una prima di riarrivare alla destinazione.
+  const dragLock = useRef<{ target: number; until: number } | null>(null);
   useEffect(() => {
     if (prevActive.current === active) return;
     prevActive.current = active;
+    const lock = dragLock.current;
+    if (lock) {
+      if (active !== lock.target && Date.now() < lock.until) return;
+      dragLock.current = null;
+    }
     const target = active * ANGLE_STEP;
     const current = wheelAngle.get();
     let delta = (target - current) % 360; // percorso più breve verso il target (mai più di mezzo giro)
@@ -70,7 +79,76 @@ export function ReelNav({ active }: { active: number }) {
     return () => controls.stop();
   }, [active, wheelAngle]);
 
-  return <nav aria-label="Navigazione principale" className="fixed -right-21 -top-21 z-150 h-[32rem] w-[32rem] origin-top-right rounded-bl-[80%] scale-[0.5] sm:-right-34 sm:-top-34 sm:scale-[0.8] md:-right-36 md:-top-36 md:scale-[0.85] xl:-right-42 xl:-top-42 xl:scale-100">
+  // --- Rotazione a mano (dito su telefono, clic e trascina con mouse/touchpad) ---
+  // Molti visitatori provano d'istinto a girare la bobina: trascinandola ruota seguendo il dito, e al
+  // rilascio si ferma sull'etichetta più vicina portando a quella sezione. Il trascinamento parte solo
+  // dopo qualche pixel di movimento: un tocco/clic fermo resta un clic normale sull'etichetta.
+  const reelRef = useRef<HTMLDivElement>(null);
+  const drag = useRef<{ id: number; startX: number; startY: number; lastAngle: number; dragging: boolean } | null>(null);
+  const suppressClick = useRef(false);
+
+  // Angolo (gradi, in senso orario come lo schermo) del puntatore attorno al centro della bobina, e sua
+  // distanza dal centro — misurati sul riquadro reale a schermo, quindi già comprensivi dello scale del nav.
+  const pointerPolar = (e: React.PointerEvent) => {
+    const r = reelRef.current?.getBoundingClientRect();
+    if (!r) return null;
+    const dx = e.clientX - (r.left + r.width / 2);
+    const dy = e.clientY - (r.top + r.height / 2);
+    return { angle: (Math.atan2(dy, dx) * 180) / Math.PI, dist: Math.hypot(dx, dy), ringRadius: (r.width * RING_SIZE) / REEL_BOX / 2 };
+  };
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    const p = pointerPolar(e);
+    if (!p || p.dist > p.ringRadius) return; // solo dentro il disco, non negli angoli vuoti del nav
+    drag.current = { id: e.pointerId, startX: e.clientX, startY: e.clientY, lastAngle: p.angle, dragging: false };
+  };
+
+  const onPointerMove = (e: React.PointerEvent) => {
+    const d = drag.current;
+    if (!d || d.id !== e.pointerId) return;
+    const p = pointerPolar(e);
+    if (!p) return;
+    if (!d.dragging) {
+      if (Math.hypot(e.clientX - d.startX, e.clientY - d.startY) < 8) return;
+      d.dragging = true;
+      wheelAngle.stop();
+      e.currentTarget.setPointerCapture(e.pointerId);
+    }
+    let delta = p.angle - d.lastAngle; // passo più breve: niente salto di 360° attraversando ±180°
+    if (delta > 180) delta -= 360;
+    if (delta < -180) delta += 360;
+    wheelAngle.set(wheelAngle.get() + delta);
+    d.lastAngle = p.angle;
+  };
+
+  const onPointerEnd = (e: React.PointerEvent) => {
+    const d = drag.current;
+    if (!d || d.id !== e.pointerId) return;
+    drag.current = null;
+    if (!d.dragging) return;
+    // Il clic che il browser genera subito dopo il rilascio non deve "cliccare" anche l'etichetta sotto al dito.
+    suppressClick.current = true;
+    setTimeout(() => { suppressClick.current = false; }, 0);
+
+    const n = sections.length;
+    const steps = Math.round(wheelAngle.get() / ANGLE_STEP);
+    const index = ((steps % n) + n) % n;
+    animate(wheelAngle, steps * ANGLE_STEP, { duration: 0.35, ease: [0.65, 0, 0.35, 1] });
+    if (e.type === "pointerup" && index !== active) {
+      dragLock.current = { target: index, until: Date.now() + 3000 };
+      go(ids[index] ?? "top");
+    }
+  };
+
+  return <nav
+    aria-label="Navigazione principale"
+    onPointerDown={onPointerDown}
+    onPointerMove={onPointerMove}
+    onPointerUp={onPointerEnd}
+    onPointerCancel={onPointerEnd}
+    onClickCapture={(e) => { if (suppressClick.current) { e.preventDefault(); e.stopPropagation(); } }}
+    className="select-none fixed -right-21 -top-21 z-150 h-[32rem] w-[32rem] origin-top-right rounded-bl-[80%] scale-[0.5] sm:-right-34 sm:-top-34 sm:scale-[0.8] md:-right-36 md:-top-36 md:scale-[0.85] xl:-right-42 xl:-top-42 xl:scale-100">
     {/* La STESSA identica bobina ad ogni larghezza di schermo (nessuna barra/stile diverso su mobile): cambia
         solo la scala, sempre "incastonata" nell'angolo in alto a destra — sbordando leggermente fuori dal
         bordo dello schermo esattamente come su desktop (non un cerchio pieno e fluttuante su telefono).
@@ -91,9 +169,12 @@ export function ReelNav({ active }: { active: number }) {
 
     {/* Riquadro dedicato alla bobina: stesso margine (REEL_OFFSET) dal lato alto e dal lato destro del nav,
         così il disco è ancorato nell'angolo in modo simmetrico invece di sfondare fuori dallo schermo. */}
-    <div className="pointer-events-none absolute right-3 top-3 h-112 w-112">
+    <div ref={reelRef} className="pointer-events-none absolute right-3 top-3 h-112 w-112">
       {/* right-3/top-3 = 0.75rem su entrambi i lati (REEL_OFFSET): bobina incastrata nell'angolo, h-112/w-112 = 28rem (REEL_BOX) */}
-      <div className="pointer-events-none absolute inset-0 m-auto h-104 w-104 rounded-full bg-ink" />
+      <div className="pointer-events-auto absolute inset-0 m-auto h-104 w-104 cursor-grab touch-none rounded-full bg-ink active:cursor-grabbing" />
+      {/* Il disco nero è la "presa" per girare la bobina a mano (vedi onPointerDown sul nav): pointer-events-auto
+          per ricevere il dito/mouse, touch-none perché su telefono il trascinamento giri la bobina invece di
+          scorrere la pagina. Resta SOTTO alle etichette nello stack, quindi i clic su di loro non cambiano. */}
       {/* Sfondo nero SOLO della bobina: stesso centro e stesso diametro esatto dell'anello (h-104/w-104 = 26rem,
           RING_SIZE) — un cerchio pieno, non un quadrato/quarto di cerchio, quindi non sborda mai oltre il disco.
           pointer-events-none: è solo decorazione, altrimenti "ruba" i click destinati alle etichette che gli
@@ -301,7 +382,7 @@ function ReelLabel({ label, index, active, wheelAngle, onNavigate }: {
   return (
     <motion.div
       style={{ position: "absolute", left, top, rotate, opacity, x: "-50%", y: "-50%", transformOrigin: "50% 50%" }}
-      className="pointer-events-auto"
+      className="pointer-events-auto touch-none"
     >
       {/* x:"-50%" + y:"-50%": il CENTRO del blocco resta sul punto dell'arco — così ogni etichetta sporge al
           massimo di metà della sua larghezza (fissa, uguale per tutte) dal proprio punto, che resta sempre

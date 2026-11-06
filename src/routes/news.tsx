@@ -58,7 +58,7 @@ function NewsPage() {
   const [scanLightbox, setScanLightbox] = useState<string | null>(null);
 
   return (
-    <main className="relative min-h-screen bg-ink px-5 pb-16 pt-28 text-paper sm:pt-16 md:px-12 lg:px-20">
+    <main className="relative min-h-screen bg-ink page-x pb-16 pt-28 text-paper sm:pt-16">
       <ReelNav active={ids.indexOf("press")} />
       <Link to="/" hash="press" className="inline-flex items-center gap-2 font-display text-xs uppercase text-hot sm:text-sm">
         <ArrowLeft className="h-4 w-4" /> <span className="sm:hidden">Portfolio</span><span className="hidden sm:inline">Torna al portfolio</span>

@@ -21,7 +21,7 @@ function ScrivimiPage() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
   return (
-    <main className="relative min-h-screen bg-ink px-5 pb-20 pt-28 text-paper sm:pt-16 md:px-12 lg:px-20">
+    <main className="relative min-h-screen bg-ink page-x pb-20 pt-28 text-paper sm:pt-16">
       <ReelNav active={ids.indexOf("contatti")} />
       {/* "Torna al portfolio" per esteso da sm in su; solo "Portfolio" su telefono (schermi molto stretti,
           <360px, altrimenti finiva dietro alla bobina anche a font ridotto) — stesso link, stessa meta. */}

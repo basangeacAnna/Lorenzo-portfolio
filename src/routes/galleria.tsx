@@ -143,7 +143,7 @@ function GalleriaPage() {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   return (
-    <main className="relative min-h-screen bg-paper px-5 pb-16 pt-28 text-ink sm:pt-16 md:px-12 lg:px-20">
+    <main className="relative min-h-screen bg-paper page-x pb-16 pt-28 text-ink sm:pt-16">
       <ReelNav active={ids.indexOf("galleria")} />
       <Link to="/" hash="galleria" className="inline-flex items-center gap-2 font-display text-xs uppercase text-hot sm:text-sm">
         <ArrowLeft className="h-4 w-4" /> <span className="sm:hidden">Portfolio</span><span className="hidden sm:inline">Torna al portfolio</span>

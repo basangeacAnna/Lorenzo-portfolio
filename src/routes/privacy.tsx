@@ -18,7 +18,7 @@ export const Route = createFileRoute("/privacy")({
 // del form via server (Resend), entrambi già discussi ma non ancora attivi.
 function PrivacyPage() {
   return (
-    <main className="relative min-h-screen bg-paper px-5 pb-20 pt-16 text-ink md:px-12 lg:px-20">
+    <main className="relative min-h-screen bg-paper page-x pb-20 pt-16 text-ink">
       <Link to="/" className="inline-flex items-center gap-2 font-display text-xs uppercase text-hot sm:text-sm">
         <ArrowLeft className="h-4 w-4" /> Torna al portfolio
       </Link>

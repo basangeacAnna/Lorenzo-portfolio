@@ -170,6 +170,27 @@
   animation: drift 8s ease-in-out infinite;
 }
 
+/* Margini laterali di pagina/sezione (sostituisce "px-5 md:px-12 lg:px-20"). Oltre i 100rem di contenuto
+   (schermi ultrawide 21:9 / 32:9) il margine cresce per tenere il contenuto centrato in una colonna
+   leggibile, mentre lo SFONDO della sezione resta a tutta larghezza: senza questo, griglie, foto e video
+   si stiravano per 3000+ px. */
+@utility page-x {
+  padding-inline: 1.25rem;
+  @media (width >= 48rem) { padding-inline: 3rem; }
+  @media (width >= 64rem) { padding-inline: max(5rem, calc((100vw - 100rem) / 2)); }
+}
+
+/* Monitor grandi E alti (1440p ultrawide, 4K): tutto il sito è in rem, quindi alzare la dimensione base
+   ingrandisce in proporzione testi, spazi e bobina — altrimenti su 3440×1440 o 5120×1440 il sito restava
+   minuscolo al centro dello schermo. Serve anche l'altezza minima: un ultrawide basso (2560×1080) non ha
+   spazio verticale per ingrandire. */
+@media (width >= 2200px) and (height >= 1300px) {
+  html { font-size: 112.5%; }
+}
+@media (width >= 3000px) and (height >= 1900px) {
+  html { font-size: 137.5%; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
 }
