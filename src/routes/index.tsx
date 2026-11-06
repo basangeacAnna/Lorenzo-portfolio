@@ -207,21 +207,21 @@ function Index() {
             schermo) quali delle posizioni percentuali originali (pensate solo per il layout desktop a due
             colonne, dove testo e foto sono affiancati e non impilati) finivano nascoste dietro l'uno o
             l'altra. Da md in su tornano le posizioni originali, invariate. */}
-        <FloatingMic className="slow-drift pointer-events-none absolute left-[10%] top-[18%] h-10 w-8 -rotate-6 text-hot/70 md:left-[0%] md:top-[34%] md:h-16 md:w-12" />
-        <FloatingClapper className="slow-drift pointer-events-none absolute left-[38%] top-[15%] h-9 w-11 rotate-6 text-paper/60 md:left-[40%] md:top-[36%] md:h-14 md:w-18" style={{ animationDelay: "-2.5s" }} />
-        <Drama strokeWidth={1.5} className="slow-drift pointer-events-none absolute left-[65%] top-[93%] h-8 w-8 -rotate-3 text-hot/60 md:left-[36%] md:top-[72%] md:h-12 md:w-12" style={{ animationDelay: "-5s" }} />
+        <FloatingMic className="slow-drift pointer-events-none absolute left-[10%] top-[14%] h-10 w-8 -rotate-6 text-hot/70 md:left-[0%] md:top-[34%] md:h-16 md:w-12" />
+        <FloatingClapper className="slow-drift pointer-events-none absolute left-[38%] top-[15%] h-9 w-11 rotate-6 text-paper/60 md:left-[38%] md:top-[26%] md:h-14 md:w-18" style={{ animationDelay: "-2.5s" }} />
+        <Drama strokeWidth={1.5} className="slow-drift pointer-events-none absolute left-[65%] top-[93%] h-8 w-8 -rotate-3 text-hot/60 md:left-[50%] md:top-[46%] md:h-12 md:w-12" style={{ animationDelay: "-5s" }} />
         <FloatingNote className="slow-drift pointer-events-none absolute -left-[2%] top-[66%] h-9 w-7 rotate-6 text-paper/60 md:h-14 md:w-10" style={{ animationDelay: "-1.5s" }} />
-        <FloatingPen className="pointer-events-none absolute left-[14%] top-[88%] h-7 w-7 -rotate-12 text-hot/65 md:h-11 md:w-11" />
+        <FloatingPen className="pointer-events-none absolute left-[14%] top-[88%] h-7 w-7 -rotate-12 text-hot/65 md:left-[51%] md:top-[80%] md:h-11 md:w-11" />
         <div className="pointer-events-none absolute left-[58%] top-[19%] h-5 w-5 rotate-12 bg-hot md:left-[11%] md:top-[26%] md:h-7 md:w-7" />
-        <div className="slow-drift pointer-events-none absolute left-[22%] top-[20%] h-4 w-4 rounded-full bg-signal md:left-[28%] md:top-[20%] md:h-6 md:w-6" style={{ animationDelay: "-4s" }} />
+        <div className="slow-drift pointer-events-none absolute left-[22%] top-[18%] h-4 w-4 rounded-full bg-signal md:left-[28%] md:top-[20%] md:h-6 md:w-6" style={{ animationDelay: "-4s" }} />
         <div className="pointer-events-none absolute left-[48%] top-[21%] h-3 w-3 rounded-full bg-paper md:left-[50%] md:top-[26%] md:h-5 md:w-5" />
         <div className="pointer-events-none absolute left-[75%] top-[54%] h-5 w-5 -rotate-6 bg-paper/90 md:h-8 md:w-8" />
-        <div className="slow-drift pointer-events-none absolute left-[2%] top-[48%] h-3 w-3 rounded-full bg-hot md:h-5 md:w-5" style={{ animationDelay: "-3s" }} />
-        <div className="pointer-events-none absolute left-[7%] top-[82%] h-5 w-5 rotate-45 bg-signal md:h-7 md:w-7" />
+        <div className="slow-drift pointer-events-none absolute left-[2%] top-[57%] h-3 w-3 rounded-full bg-hot md:top-[48%] md:h-5 md:w-5" style={{ animationDelay: "-3s" }} />
+        <div className="pointer-events-none absolute left-[7%] top-[82%] h-5 w-5 rotate-45 bg-signal md:left-[24%] md:top-[32%] md:h-7 md:w-7" />
         <div className="pointer-events-none absolute left-[24%] top-[93%] h-3 w-3 rounded-full bg-paper/80 md:h-4 md:w-4" />
-        <div className="slow-drift pointer-events-none absolute left-[20%] top-[60%] h-4 w-4 rotate-12 bg-hot/85 md:left-[46%] md:top-[84%] md:h-6 md:w-6" style={{ animationDelay: "-6s" }} />
+        <div className="slow-drift pointer-events-none absolute left-[20%] top-[60%] h-4 w-4 rotate-12 bg-hot/85 md:left-[52%] md:top-[66%] md:h-6 md:w-6" style={{ animationDelay: "-6s" }} />
         <div className="pointer-events-none absolute left-[40%] top-[94%] h-3 w-3 rounded-full bg-signal md:left-[56%] md:top-[62%] md:h-4 md:w-4" />
-        <div className="pointer-events-none absolute left-[15%] top-[55%] h-3 w-3 rotate-[20deg] bg-paper/80 md:h-5 md:w-5" />
+        <div className="pointer-events-none absolute left-[15%] top-[57%] h-3 w-3 rotate-[20deg] bg-paper/80 md:top-[36%] md:h-5 md:w-5" />
         <div className="relative z-10 md:pb-10"><h1 className="max-w-5xl font-display text-[clamp(3.5rem,9vw,7rem)] font-bold uppercase leading-[.78] min-[2200px]:text-[clamp(7rem,min(7vw,14vh),11rem)]">Lorenzo<br/><span className="mt-1 inline-block text-transparent [-webkit-text-stroke:1px_var(--paper)]">Blaconà</span></h1><p className="mt-6 font-display text-base uppercase md:text-xl min-[2200px]:text-2xl">Attore • Cantante • Scrittore • Grafico<br/><span className="text-sm normal-case italic text-muted-foreground md:text-base min-[2200px]:text-lg">...e un gran sognatore</span></p><ArrowDownRight className="mt-6 h-10 w-10 text-hot" /></div>
         {/* Stessa foto della versione desktop (sotto, "hidden md:block"), ma prima non c'era NESSUNA versione
             per telefono: la foto spariva del tutto sotto i 768px. Qui una versione più semplice (niente
